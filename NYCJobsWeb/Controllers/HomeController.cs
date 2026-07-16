@@ -1,106 +1,121 @@
-﻿using BingGeocoder;
+using Microsoft.AspNetCore.Mvc;
 using NYCJobsWeb.Models;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using System.Text.Json;
 
 namespace NYCJobsWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private JobsSearch _jobsSearch = new JobsSearch();
+        private readonly JobsSearch _jobsSearch;
 
-        // GET: Home
-        public ActionResult Index()
+        public HomeController(JobsSearch jobsSearch)
+        {
+            _jobsSearch = jobsSearch;
+        }
+
+        public IActionResult Index()
         {
             return View();
         }
 
-        public ActionResult JobDetails()
+        public IActionResult JobDetails()
         {
             return View();
         }
 
-        public ActionResult Search(string q = "", string businessTitleFacet = "", string postingTypeFacet = "", string salaryRangeFacet = "",
+        public IActionResult Search(string q = "", string businessTitleFacet = "", string postingTypeFacet = "", string salaryRangeFacet = "",
             string sortType = "", double lat = 40.736224, double lon = -73.99251, int currentPage = 0, int zipCode = 10001,
             int maxDistance = 0)
         {
-            // If blank search, assume they want to search everything
             if (string.IsNullOrWhiteSpace(q))
+            {
                 q = "*";
+            }
 
             string maxDistanceLat = string.Empty;
             string maxDistanceLon = string.Empty;
 
-            //Do a search of the zip code index to get lat / long of this location
-            //Eventually this should be extended to search beyond just zip (i.e. city)
             if (maxDistance > 0)
             {
                 var zipReponse = _jobsSearch.SearchZip(zipCode.ToString());
-                foreach (var result in zipReponse.GetResults())
+                if (zipReponse is not null)
                 {
-                    var doc = (dynamic)result.Document;
-                    maxDistanceLat = Convert.ToString(doc["geo_location"].Latitude, CultureInfo.InvariantCulture);
-                    maxDistanceLon = Convert.ToString(doc["geo_location"].Longitude, CultureInfo.InvariantCulture);
+                    foreach (var result in zipReponse.GetResults())
+                    {
+                        var doc = result.Document;
+                        if (doc.TryGetValue("geo_location", out var geoLocation))
+                        {
+                            TryReadGeoCoordinates(geoLocation, out maxDistanceLat, out maxDistanceLon);
+                        }
+                    }
                 }
             }
 
             var response = _jobsSearch.Search(q, businessTitleFacet, postingTypeFacet, salaryRangeFacet, sortType, lat, lon, currentPage, maxDistance, maxDistanceLat, maxDistanceLon);
-            return new JsonResult
+            if (response is null)
             {
-                // ***************************************************************************************************************************
-                // If you get an error here, make sure to check that you updated the SearchServiceName and SearchServiceApiKey in Web.config
-                // ***************************************************************************************************************************
+                return Json(new NYCJob { Results = new List<Azure.Search.Documents.Models.SearchResult<Azure.Search.Documents.Models.SearchDocument>>(), Facets = new Dictionary<string, IList<Azure.Search.Documents.Models.FacetResult>>(), Count = 0 });
+            }
 
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                Data = new NYCJob() { Results = response.GetResults().ToList(), Facets = response.Facets, Count = Convert.ToInt32(response.TotalCount) }
-            };
+            return Json(new NYCJob
+            {
+                Results = response.GetResults().ToList(),
+                Facets = response.Facets,
+                Count = Convert.ToInt32(response.TotalCount)
+            });
         }
 
         [HttpGet]
-        public ActionResult Suggest(string term, bool fuzzy = true)
+        public IActionResult Suggest(string term, bool fuzzy = true)
         {
-            // Call suggest query and return results
             var response = _jobsSearch.Suggest(term, fuzzy);
             List<string> suggestions = new List<string>();
-            foreach (var result in response.Results)
+
+            if (response is not null)
             {
-                suggestions.Add(result.Text);
-            }
-
-            // Get unique items
-            List<string> uniqueItems = suggestions.Distinct().ToList();
-
-            return new JsonResult
-            {
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                Data = uniqueItems
-            };
-
-        }
-
-        public ActionResult LookUp(string id)
-        {
-            // Take a key ID and do a lookup to get the job details
-            if (id != null)
-            {
-                var response = _jobsSearch.LookUp(id);
-                return new JsonResult
+                foreach (var result in response.Results)
                 {
-                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                    Data = new NYCJobLookup() { Result = response }
-                };
-            }
-            else
-            {
-                return null;
+                    suggestions.Add(result.Text);
+                }
             }
 
+            return Json(suggestions.Distinct().ToList());
         }
 
+        public IActionResult LookUp(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest("Job ID is required.");
+            }
+
+            var response = _jobsSearch.LookUp(id);
+            return Json(new NYCJobLookup { Result = response });
+        }
+
+        private static void TryReadGeoCoordinates(object geoLocation, out string latitude, out string longitude)
+        {
+            latitude = string.Empty;
+            longitude = string.Empty;
+
+            if (geoLocation is JsonElement element)
+            {
+                if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("coordinates", out var coordinates) && coordinates.ValueKind == JsonValueKind.Array && coordinates.GetArrayLength() >= 2)
+                {
+                    longitude = coordinates[0].GetDouble().ToString(CultureInfo.InvariantCulture);
+                    latitude = coordinates[1].GetDouble().ToString(CultureInfo.InvariantCulture);
+                    return;
+                }
+
+                if (element.ValueKind == JsonValueKind.Object
+                    && element.TryGetProperty("Latitude", out var latProperty)
+                    && element.TryGetProperty("Longitude", out var lonProperty))
+                {
+                    latitude = latProperty.GetDouble().ToString(CultureInfo.InvariantCulture);
+                    longitude = lonProperty.GetDouble().ToString(CultureInfo.InvariantCulture);
+                }
+            }
+        }
     }
 }
