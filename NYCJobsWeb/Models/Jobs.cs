@@ -1,21 +1,36 @@
-﻿using Azure.Search.Documents.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+namespace NYCJobsWeb.Models;
 
-namespace NYCJobsWeb.Models
+public class NYCJob
 {
-    public class NYCJob
-    {
-        public IDictionary<string, IList<FacetResult>> Facets { get; set; }
-        public IList<SearchResult<SearchDocument>> Results { get; set; }
-        public int? Count { get; set; }
-    }
+    public IDictionary<string, IList<FacetValue>> Facets { get; set; } = new Dictionary<string, IList<FacetValue>>();
 
-    public class NYCJobLookup
-    {
-        public SearchDocument Result { get; set; }
-    }
+    public IList<SearchResultItem> Results { get; set; } = new List<SearchResultItem>();
 
+    public int Count { get; set; }
+}
+
+public class NYCJobLookup
+{
+    public IDictionary<string, object?>? Result { get; set; }
+}
+
+public class SearchResultItem
+{
+    public IDictionary<string, object?> Document { get; set; } = new Dictionary<string, object?>();
+
+    public IDictionary<string, string>? Highlights { get; set; }
+}
+
+public class FacetValue
+{
+    public object? Value { get; set; }
+
+    public long? Count { get; set; }
+}
+
+public class GeoLocation
+{
+    public double Latitude { get; set; }
+
+    public double Longitude { get; set; }
 }
