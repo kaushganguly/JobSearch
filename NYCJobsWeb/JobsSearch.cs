@@ -57,7 +57,7 @@ namespace NYCJobsWeb
                 {
                     SearchMode = SearchMode.Any,
                     Size = 10,
-                    Skip = Math.Max(currentPage - 1, 0) * 10,
+                    Skip = (Math.Max(currentPage, 1) - 1) * 10,
                     IncludeTotalCount = true,
                     HighlightPreTag = "<b>",
                     HighlightPostTag = "</b>"
