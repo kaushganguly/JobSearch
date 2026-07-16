@@ -87,7 +87,7 @@ namespace NYCJobsWeb.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest();
+                return BadRequest("Job ID is required.");
             }
 
             var response = _jobsSearch.LookUp(id);
