@@ -1,0 +1,27 @@
+{
+  "$schema": "tasks-schema.json",
+  "description": ".NET version upgrade plan from .NET Framework (4.5 / 4.7.2) to .NET 10.0",
+  "tasks": [
+    {
+      "type": "upgrade",
+      "id": "001-upgrade-dotnet-to-net10",
+      "description": "Upgrade the JobSearch solution (NYCJobsWeb and DataLoader) from .NET Framework to .NET 10.0 (latest LTS)",
+      "reason": "DataLoader targets .NET Framework 4.5 which is EOL and does not support netstandard2.0, preventing use of modern Azure SDK (Azure.*) packages. NYCJobsWeb targets .NET Framework 4.7.2 with System.Web-based ASP.NET MVC 5, which is not supported on modern .NET and requires migration to ASP.NET Core. The user explicitly requested an upgrade to the latest LTS version. Upgrading both projects to .NET 10.0 ensures long-term support, access to modern APIs, and full Azure SDK compatibility.",
+      "requirements": "Upgrade both projects in the JobSearch solution from .NET Framework to net10.0. Both use legacy non-SDK project formats and require SDK-style conversion. NYCJobsWeb (ASP.NET MVC 5 on .NET Framework 4.7.2) must be migrated to ASP.NET Core on .NET 10. DataLoader (console app on .NET Framework 4.5) must be converted to SDK-style and retargeted to net10.0. NuGet packages must be updated to versions compatible with net10.0. All API incompatibilities introduced by the framework change must be resolved. The solution must build successfully and all existing tests must pass after upgrade.",
+      "skills": [],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "passUnitTests": "true"
+      },
+      "status": "pending"
+    }
+  ],
+  "metadata": {
+    "planName": "upgrade-to-lts",
+    "projectName": "JobSearch",
+    "language": "dotnet",
+    "createdAt": "2026-07-16T02:10:38.000Z",
+    "version": "1.0"
+  }
+}
