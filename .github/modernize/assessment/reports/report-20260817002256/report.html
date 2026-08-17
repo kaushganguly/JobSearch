@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Assessment - DataLoader</title>
+<style>
+:root {
+  --bg-primary: #ffffff;
+  --bg-card: #f8f9fa;
+  --bg-page: #f0f1f3;
+  --text-primary: #24292f;
+  --text-secondary: #57606a;
+  --text-muted: #6b7280;
+  --border-color: #d0d7de;
+  --border-light: #e1e4e8;
+  --link-color: #2563eb;
+  --color-mandatory: #E3008C;
+  --color-potential: #637CEF;
+  --color-optional: #A19F9D;
+  --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  --font-mono: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-family); font-size: 13px; color: var(--text-primary); background: var(--bg-primary); line-height: 1.5; margin: 0; padding: 0; }
+a { color: var(--link-color); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Page layout ───────────────────────────────────────────── */
+.main { margin: 0; padding: 24px 32px; background: var(--bg-primary); }
+.back-link { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; display: block; }
+h1 { font-weight: 600; font-size: 20px; color: var(--text-primary); margin-bottom: 20px; }
+
+/* ── Report cards (matches VS Code .vscode-report-card) ──── */
+.report-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 4px; padding: 12px; margin-bottom: 20px; }
+.report-card h2 { font-size: 14px; font-weight: 600; margin: 0; color: var(--text-primary); }
+.report-card-body { margin-top: 16px; }
+
+/* ── Component Information (two-column) ────────────────── */
+.app-info-container { display: flex; gap: 8px; flex-wrap: wrap; }
+.app-info-column { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 8px; }
+.app-info-row { display: flex; align-items: baseline; }
+.app-info-label { width: 136px; flex-shrink: 0; font-weight: 600; color: var(--text-primary); }
+.app-info-value { flex: 1; color: var(--text-primary); }
+
+/* ── Issue Summary (pie charts + legend) ─────────────────── */
+.cards-container { display: flex; align-items: stretch; gap: 20px; flex-wrap: wrap; }
+.issue-summary-card { flex: 2; }
+.domain-summary-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-around; }
+.domain-summary-item { flex: 1; min-width: 120px; text-align: center; padding: 0 16px; border-right: 1px solid var(--border-light); }
+.domain-summary-item:last-child { border-right: none; }
+.domain-summary-item h3 { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-top: 8px; }
+.domain-summary-item .count { font-size: 12px; color: var(--text-secondary); }
+.criticality-legend { display: flex; flex-wrap: wrap; gap: 15px; padding-top: 12px; justify-content: center; }
+.criticality-legend .legend-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+.legend-swatch { display: inline-block; width: 1em; height: 1em; border-radius: 2px; }
+
+/* ── Issue list tables ───────────────────────────────────── */
+.issue-section { margin-top: 20px; }
+.issue-section h2 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.issue-table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 600px; }
+.issue-table th { text-align: left; text-transform: uppercase; font-weight: 600; font-size: calc(13px * 0.875); padding: 6px 8px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); color: var(--text-secondary); position: sticky; top: 0; z-index: 1; }
+.issue-table td { padding: 12px 8px; border-bottom: 1px solid var(--border-light); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
+.col-issue { width: 55%; }
+.col-criticality { width: 25%; }
+.col-storypoint { width: 20%; }
+
+/* ── Target dropdown ─────────────────────────────────────── */
+.target-select-container { margin: 4px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+.target-select-container label { font-weight: 600; color: var(--text-primary); font-size: 14px; }
+.target-select-container select { font-family: var(--font-family); font-size: 13px; padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); cursor: pointer; }
+
+/* ── Filter bar ──────────────────────────────────────────── */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0 8px 0; align-items: center; }
+.multi-select { position: relative; display: inline-block; min-width: 140px; }
+.multi-select-btn { font-family: var(--font-family); font-size: 13px; padding: 4px 24px 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); cursor: pointer; width: 100%; text-align: left; position: relative; white-space: nowrap; }
+.multi-select-btn::after { content: '\25BE'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text-secondary); }
+.multi-select-dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 100%; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; margin-top: 2px; }
+.multi-select.open .multi-select-dropdown { display: block; }
+.multi-select-option { display: flex; align-items: center; gap: 6px; padding: 5px 10px; cursor: pointer; font-size: 13px; white-space: nowrap; }
+.multi-select-option:hover { background: var(--bg-secondary); }
+.multi-select-option input[type=checkbox] { margin: 0; cursor: pointer; }
+.clear-filters { font-size: 12px; color: var(--link-color); cursor: pointer; margin-left: 4px; }
+
+/* ── Criticality labels (colored square + text) ──────────── */
+.crit-label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; white-space: nowrap; }
+.crit-square { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.crit-square-mandatory { background: var(--color-mandatory); }
+.crit-square-potential { background: var(--color-potential); }
+.crit-square-optional { background: var(--color-optional); }
+
+/* ── Expandable rows ─────────────────────────────────────── */
+.expand-btn { background: none; border: none; cursor: pointer; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 11px; transition: transform 0.15s; padding: 0; vertical-align: middle; flex-shrink: 0; }
+.expand-btn.open { transform: rotate(90deg); }
+.issue-title-cell { display: flex; align-items: center; gap: 4px; }
+.detail-row td { padding: 0; border-bottom: 1px solid var(--border-light); white-space: normal; overflow: visible; text-overflow: clip; }
+.detail-content { display: flex; gap: 0; padding: 8px 8px 8px 32px; min-width: 0; }
+.file-list { flex: 0 0 50%; min-width: 0; overflow: hidden; }
+.file-list table { width: 100%; border-collapse: collapse; }
+.file-list th { font-size: calc(13px * 0.875); text-transform: uppercase; font-weight: 600; color: var(--text-secondary); padding: 6px 8px; border-bottom: 1px solid var(--border-color); text-align: left; height: 32px; }
+.file-list td { font-size: 13px; padding: 6px 8px; border-bottom: 1px solid var(--border-light); color: var(--text-primary); }
+.file-list .file-path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px; display: block; }
+.file-list .position { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); }
+.explanation-panel { flex: 1; padding-left: 16px; min-width: 0; overflow-wrap: break-word; word-wrap: break-word; }
+.explanation-panel h4 { font-size: calc(13px * 0.875); text-transform: uppercase; font-weight: 600; color: var(--text-secondary); padding: 6px 0; border-bottom: 1px solid var(--border-color); height: 32px; margin: 0; }
+.explanation-panel p { font-size: 13px; padding: 8px 0; color: var(--text-primary); line-height: 1.6; white-space: normal; word-break: break-word; }
+
+/* ── Experimental badge ──────────────────────────────────── */
+.badge-experimental { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #fef9c3; color: #854d0e; vertical-align: middle; margin-left: 8px; cursor: default; }
+
+/* ── Footer ──────────────────────────────────────────────── */
+.footer { text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 13px; }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 800px) {
+  .main { padding: 16px; }
+  .app-info-container { flex-direction: column; }
+  .domain-summary-container { flex-direction: column; }
+  .domain-summary-item { border-right: none; border-bottom: 1px solid var(--border-light); padding-bottom: 12px; }
+  .detail-content { flex-direction: column; }
+  .file-list { flex: none; width: 100%; }
+  .explanation-panel { padding-left: 0; padding-top: 8px; }
+}
+/* ── Tab navigation ──────────────────────────────────────── */
+.tab-nav { display: flex; gap: 0; border-bottom: 1px solid var(--border-color); margin-bottom: 28px; flex-wrap: wrap; }
+.tab-btn { background: none; border: none; border-bottom: 2px solid transparent; padding: 10px 18px; font-size: 13px; font-family: var(--font-family); color: var(--text-secondary); cursor: pointer; margin-bottom: -1px; white-space: nowrap; position: relative; }
+.tab-btn:hover { color: var(--text-primary); }
+.tab-btn.active { color: var(--link-color); border-bottom-color: var(--link-color); font-weight: 600; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Tooltip on tab ──────────────────────────────────────── */
+.tab-btn[data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #24292f; color: #ffffff; font-size: 12px; font-weight: 400; padding: 6px 10px; border-radius: 4px; white-space: normal; width: max-content; max-width: 260px; text-align: center; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 100; }
+.tab-btn[data-tooltip]:hover::after { opacity: 1; }
+
+/* ── Fact content — prose column ─────────────────────────── */
+.fact-content { max-width: 860px; margin: 0 auto; line-height: 1.75; color: var(--text-primary); font-size: 14px; }
+.fact-content h1 { font-size: 22px; font-weight: 700; margin: 0 0 6px 0; color: var(--text-primary); letter-spacing: -0.01em; }
+.fact-content h1 + p { margin-top: 6px; color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; }
+.fact-content h2 { font-size: 17px; font-weight: 700; margin: 36px 0 12px 0; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); letter-spacing: -0.01em; }
+.fact-content h3 { font-size: 14px; font-weight: 700; margin: 24px 0 8px 0; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.04em; font-size: 12px; color: var(--text-secondary); }
+.fact-content p { margin: 10px 0; color: var(--text-primary); }
+.fact-content ul, .fact-content ol { margin: 10px 0 10px 22px; }
+.fact-content li { margin: 5px 0; }
+.fact-content a { color: var(--link-color); }
+.fact-content a:hover { text-decoration: underline; }
+
+/* ── Fact tables ─────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; margin: 16px 0; }
+.fact-content table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 13px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); }
+.fact-content thead { background: var(--bg-card); }
+.fact-content th { text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; padding: 8px 14px; border-bottom: 1px solid var(--border-color); color: var(--text-secondary); }
+.fact-content td { padding: 9px 14px; border-bottom: 1px solid var(--border-light); vertical-align: top; color: var(--text-primary); }
+.fact-content tr:last-child td { border-bottom: none; }
+.fact-content tbody tr:hover { background: #f6f8fa; }
+
+/* ── Fact code ───────────────────────────────────────────── */
+.fact-content code { font-family: var(--font-mono); font-size: 12px; background: #f0f1f3; padding: 2px 6px; border-radius: 4px; color: #c7254e; }
+.fact-content pre { background: #f6f8fa; border: 1px solid var(--border-light); border-radius: 6px; padding: 14px 16px; overflow-x: auto; margin: 14px 0; }
+.fact-content pre code { background: none; color: var(--text-primary); padding: 0; border-radius: 0; }
+.fact-content hr { border: none; border-top: 1px solid var(--border-light); margin: 28px 0; }
+.fact-content strong { font-weight: 600; }
+.fact-content em { font-style: italic; }
+.fact-content blockquote { border-left: 3px solid var(--border-color); margin: 12px 0; padding: 4px 16px; color: var(--text-secondary); }
+.fact-unavailable { padding: 32px 0; }
+.fact-unavailable h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); text-transform: none; letter-spacing: 0; margin: 0 0 12px 0; }
+.fact-unavailable p { margin: 0 0 8px 0; color: var(--text-secondary); }
+.fact-unavailable ol, .fact-unavailable ul { margin: 0 0 0 22px; color: var(--text-primary); }
+.fact-unavailable li { margin: 6px 0; }
+
+/* ── Mermaid diagram card ─────────────────────────────────── */
+.mermaid { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 24px 16px; margin: 20px 0; overflow-x: auto; text-align: center; cursor: pointer; position: relative; }
+.mermaid:hover { border-color: var(--border-color); }
+.mermaid svg { max-width: 100%; height: auto !important; display: inline-block; }
+.mermaid-zoom-hint { position: absolute; top: 8px; right: 10px; font-size: 11px; color: var(--text-muted); opacity: 0; transition: opacity 0.15s; pointer-events: none; }
+.mermaid:hover .mermaid-zoom-hint { opacity: 1; }
+
+/* ── Diagram lightbox ────────────────────────────────────── */
+.diagram-lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.7); backdrop-filter: blur(2px); align-items: center; justify-content: center; cursor: zoom-out; padding: 48px 32px; }
+.diagram-lightbox.open { display: flex; }
+.diagram-lightbox-inner { background: #ffffff; border-radius: 10px; padding: 32px; width: 88vw; max-height: 88vh; overflow: hidden; cursor: default; box-shadow: 0 24px 64px rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; }
+.diagram-lightbox-inner svg { width: 100% !important; height: auto !important; max-height: 76vh; display: block; }
+.diagram-lightbox-close { position: fixed; top: 20px; right: 24px; background: #ffffff; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1001; }
+.diagram-lightbox-close:hover { background: var(--bg-card); }
+.diagram-lightbox-hint { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: #ffffff; font-size: 12px; padding: 6px 14px; border-radius: 20px; pointer-events: none; white-space: nowrap; z-index: 1001; }
+</style>
+<script>
+window.__mermaidPending = [];
+window.__mermaidReady = false;
+window.__renderMermaidIn = function(container) {
+  if (container) { window.__mermaidPending.push(container); }
+};
+</script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: false, theme: 'default', flowchart: { useMaxWidth: true }, sequence: { useMaxWidth: true } });
+
+window.__renderMermaidIn = function(container) {
+  var nodes = container ? container.querySelectorAll('.mermaid:not([data-processed])') : [];
+  if (nodes.length > 0) {
+    mermaid.run({ nodes: Array.from(nodes) }).then(function() {
+      nodes.forEach(function(node) {
+        if (!node.querySelector('.mermaid-zoom-hint')) {
+          var hint = document.createElement('span');
+          hint.className = 'mermaid-zoom-hint';
+          hint.textContent = 'Click to expand';
+          node.appendChild(hint);
+        }
+      });
+    });
+  }
+};
+
+var drained = new Set();
+(window.__mermaidPending || []).forEach(function(c) {
+  if (!drained.has(c)) { drained.add(c); window.__renderMermaidIn(c); }
+});
+window.__mermaidPending = [];
+window.__mermaidReady = true;
+
+function renderActivePanels() {
+  document.querySelectorAll('.tab-panel.active').forEach(function(p) {
+    if (!drained.has(p)) { drained.add(p); window.__renderMermaidIn(p); }
+  });
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderActivePanels);
+} else {
+  renderActivePanels();
+}
+</script>
+</head><body>
+<div id="diagram-lightbox" class="diagram-lightbox" role="dialog" aria-modal="true">
+  <button class="diagram-lightbox-close" id="diagram-lightbox-close" aria-label="Close">&#x2715;</button>
+  <div class="diagram-lightbox-hint">Scroll to zoom &nbsp;&middot;&nbsp; Drag to pan &nbsp;&middot;&nbsp; Double-click to reset</div>
+  <div class="diagram-lightbox-inner" id="diagram-lightbox-inner"></div>
+</div>
+<div class="main">
+<h1>DataLoader</h1>
+<div class="report-card">
+  <h2>Component Information</h2>
+  <div class="report-card-body">
+    <div class="app-info-container">
+      <div class="app-info-column">
+        <div class="app-info-row"><span class="app-info-label">Component Name</span><span class="app-info-value">DataLoader</span></div>
+        <div class="app-info-row"><span class="app-info-label">Effort</span><span class="app-info-value" id="effort-display">S (total story points: 7)</span></div>
+      </div>
+      <div class="app-info-column">
+        <div class="app-info-row"><span class="app-info-label">Build Tools</span><span class="app-info-value">MSBuild</span></div>
+        <div class="app-info-row"><span class="app-info-label">Frameworks</span><span class="app-info-value">.NETFramework,Version=v4.5</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="tab-issues" data-tooltip="Issues detected in the source code">Issues</button>
+  <button class="tab-btn" data-tab="tab-arch" data-tooltip="How the app&#x27;s layers connect — from UI to data.">Architecture</button>
+  <button class="tab-btn" data-tab="tab-api" data-tooltip="Endpoints exposed by this app and how services communicate.">API Contracts</button>
+  <button class="tab-btn" data-tab="tab-config" data-tooltip="Environment settings, runtime profiles, and deployment manifests.">Configuration</button>
+  <button class="tab-btn" data-tab="tab-workflows" data-tooltip="Domain entities and the core flows users move through.">Business Workflows</button>
+  <button class="tab-btn" data-tab="tab-deps" data-tooltip="Libraries and frameworks this app depends on, grouped by category.">Dependencies</button>
+  <button class="tab-btn" data-tab="tab-data" data-tooltip="Database schema, entity relationships, and persistence behavior.">Data Model</button>
+</nav>
+<div id="tab-issues" class="tab-panel active">
+<div class="target-select-container">
+  <label for="target-select">Target Compute Service:</label>
+  <select id="target-select" onchange="onTargetChange(this.value)">
+    <option value="AppService.Windows">Azure App Service</option>
+    <option value="AppService.Linux">Azure Kubernetes Service</option>
+    <option value="AKS.Linux">Azure Container Apps</option>
+    <option value="AKS.Windows">Azure App Service Container</option>
+    <option value="ACA">Azure App Service Managed Instance</option>
+  </select>
+</div>
+<div class="report-card">
+  <h2>Issue Summary</h2>
+  <div class="report-card-body">
+    <div class="domain-summary-container" id="donut-container">
+      <div class="domain-summary-item">
+<svg viewBox="0 0 100 100" width="100" height="100" style="display:block;margin:0 auto;transform:rotate(-90deg);">
+  <circle cx="50" cy="50" r="35" fill="none" stroke="var(--color-potential)" stroke-width="15" stroke-dasharray="145.11 219.91" stroke-dashoffset="-0.00"/>
+  <circle cx="50" cy="50" r="35" fill="none" stroke="var(--color-optional)" stroke-width="15" stroke-dasharray="71.80 219.91" stroke-dashoffset="-146.61"/>
+</svg>
+
+        <h3>Cloud Readiness</h3>
+        <div class="count">3 issues</div>
+      </div>
+    </div>
+    <div class="criticality-legend">
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--color-mandatory)"></span>Mandatory</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--color-potential)"></span>Potential</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--color-optional)"></span>Optional</div>
+    </div>
+  </div>
+</div>
+<div class="filter-bar" id="filter-bar">
+  <div class="multi-select" id="criticality-ms">
+    <button class="multi-select-btn" onclick="toggleMultiSelect('criticality-ms')">Criticality</button>
+    <div class="multi-select-dropdown">
+      <label class="multi-select-option"><input type="checkbox" value="potential" onchange="onMultiSelectChange('criticality-ms','Criticality')"/> Potential</label>
+      <label class="multi-select-option"><input type="checkbox" value="optional" onchange="onMultiSelectChange('criticality-ms','Criticality')"/> Optional</label>
+    </div>
+  </div>
+  <a class="clear-filters" href="javascript:void(0)" onclick="clearAllFilters()">Clear all</a>
+</div>
+<div class="issue-section" data-domain="cloud-readiness">
+  <h2>Cloud Readiness</h2>
+  <table class="issue-table">
+    <colgroup><col class="col-issue"/><col class="col-criticality"/><col class="col-storypoint"/></colgroup>
+    <thead><tr><th>Issue Category</th><th>Criticality</th><th>Story Point</th></tr></thead>
+    <tbody>
+    <tr class="issue-row" data-criticality="potential" data-targets='{&quot;AppService.Windows&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;potential&quot;},&quot;AppService.Linux&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;AKS.Linux&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;AKS.Windows&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;potential&quot;},&quot;ACA&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;AppServiceContainer.Linux&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;AppServiceContainer.Windows&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;potential&quot;},&quot;AppServiceManagedInstance.Windows&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;potential&quot;}}' data-default-effort="3" data-default-severity="potential" data-rule="Runtime.0003" onclick="toggleRow('row-cloudreadiness-0', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-cloudreadiness-0">&#x276F;</button> Old .NET Framework dependency detected</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-potential"></span>Potential</span></td>
+      <td class="sp-cell">3</td>
+    </tr>
+    <tr class="detail-row" id="row-cloudreadiness-0" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            <tr><td><span class="file-path" title="DataLoader/DataLoader.csproj">DataLoader/DataLoader.csproj</span></td><td><span class="position"></span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>Applications running on frameworks older than .NET Framework 4.8 could have potential compatibility issues.</p><p>If you are targeting Managed Instance on Azure App Service, run the app on .NET Framework 4.8 (preinstalled) without retargeting if feasible; review runtime breaking changes and validate on Managed Instance staging.</p><p>Azure App Service runs apps on .NET Framework 4.8 or .NET Framework 3.5. Upgrade to a newer target framework or double check that your application works correctly when running on .NET Framework 4.8.</p><p>Apps that already run on .NET Framework 3.5 or .NET Framework 4.8 do not need changed even if they target an older framework version.</p><p>Although retargeting to .NET Framework 4.8 will address this issue, it is not necessary. It is only necessary to ensure that the app runs correctly on .NET Framework 3.5 or .NET Framework 4.8. Applications built against older versions of the .NET Framework can run on newer versions (like 4.8) and the runtime will automatically tweak certain behaviors so that the runtime behaves as much as possible as the targeted version. Breaking change documentation mentions both runtime breaking changes and retargeting breaking changes. Runtime breaking changes refer to differences in behavior when applications are run on a newer version of the .NET Framework. These are the behavioral differences which cannot be tweaked away and will matter for applications migrating to Azure App Service. Retargeting breaking changes are changes which only manifest when an app targets a newer version of the .NET Framework. These should not cause issues during App Service migration scenarios because apps do not need re-targeted.</p><p>Actions to address this issue:<br/>    1. Review breaking changes between the version of the .NET Framework the application runs on now and .NET Framework 4.8 to make sure none are likely to affect the application.<br/>    2. Test the application running on .NET Framework 3.5 or .NET Framework 4.8 to ensure it works as expected.</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="issue-row" data-criticality="potential" data-targets='{&quot;AppService.Windows&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;},&quot;AppService.Linux&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;},&quot;AKS.Linux&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;},&quot;AKS.Windows&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;},&quot;ACA&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;},&quot;AppServiceContainer.Linux&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;},&quot;AppServiceContainer.Windows&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;},&quot;AppServiceManagedInstance.Windows&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;}}' data-default-effort="1" data-default-severity="potential" data-rule="Local.0006" onclick="toggleRow('row-cloudreadiness-1', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-cloudreadiness-1">&#x276F;</button> Hardcoded URLs detected</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-potential"></span>Potential</span></td>
+      <td class="sp-cell">1</td>
+    </tr>
+    <tr class="detail-row" id="row-cloudreadiness-1" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            <tr><td><span class="file-path" title="DataLoader/Program.cs">DataLoader/Program.cs</span></td><td><span class="position">Line 20</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>Your application has hardcoded URLs that might correspond to services that are not accessible on Azure.</p><p>Review and ensure that the application is attempting to access URLs that would be available from Azure. You might need to migrate those services to Azure too, this way you will get the benefit of lower latency in the cloud.</p><p>If your application needs to depend on services that run on-premises, you can connect your Azure and local networks with ExpressRoute, Hybrid Connections, or VPN solutions.</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="issue-row" data-criticality="optional" data-targets='{&quot;AppService.Windows&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;},&quot;AppService.Linux&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;},&quot;AKS.Linux&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;},&quot;AKS.Windows&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;},&quot;ACA&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;},&quot;AppServiceContainer.Linux&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;},&quot;AppServiceContainer.Windows&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;},&quot;AppServiceManagedInstance.Windows&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;}}' data-default-effort="3" data-default-severity="optional" data-rule="Security.0002" onclick="toggleRow('row-cloudreadiness-2', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-cloudreadiness-2">&#x276F;</button> Connection strings without configuration builders detected</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-optional"></span>Optional</span></td>
+      <td class="sp-cell">3</td>
+    </tr>
+    <tr class="detail-row" id="row-cloudreadiness-2" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            <tr><td><span class="file-path" title="DataLoader/App.config">DataLoader/App.config</span></td><td><span class="position"></span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>Connection strings without configuration builders detected.  </p><p> Keeping connection strings directly in the app is not the best practice and might introduce security risks, increased maintenance, scalability challenges or compliance standards (such as PCI DSS, GDPR, etc.). </p><p> Instead, it is recommended to use configuration builders to get secrets from secure sources in Azure environment.</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</div><!-- #tab-issues -->
+<div id="tab-arch" class="tab-panel">
+  <div class="fact-content"><h1 id="architecture-diagram">Architecture Diagram</h1>
+<p>This repository contains an ASP.NET MVC web application and a companion console loader used to publish schema and sample data into Azure AI Search. The architecture is centered around read-only search experiences backed by two Azure Search indexes.</p>
+<h2 id="application-architecture">Application Architecture</h2>
+<div class="mermaid">
+flowchart TD
+    subgraph Client["Client Layer"]
+        Browser["Web Browser"]
+    end
+
+    subgraph App["Application Layer - ASP.NET MVC 5 on .NET Framework 4.7.2"]
+        HomeCtrl["HomeController"]
+        SearchSvc["JobsSearch service"]
+    end
+
+    subgraph Data["Data Layer"]
+        JobsIdx[("Azure AI Search index: nycjobs")]
+        ZipIdx[("Azure AI Search index: zipcodes")]
+        SchemaFiles[("JSON schema and data files")]
+    end
+
+    subgraph External["External Services"]
+        Bing["Bing Geocoder"]
+        AzureSearch["Azure AI Search service"]
+    end
+
+    subgraph Loader["DataLoader Console App"]
+        LoaderProg["Program"]
+        LoaderHttp["AzureSearchHelper REST client"]
+    end
+
+    Browser -->|"HTTP requests"| HomeCtrl
+    HomeCtrl -->|"query and suggest"| SearchSvc
+    SearchSvc -->|"search documents"| JobsIdx
+    SearchSvc -->|"zip geospatial lookup"| ZipIdx
+    HomeCtrl -->|"zip geocode dependency"| Bing
+    JobsIdx -->|"hosted on"| AzureSearch
+    ZipIdx -->|"hosted on"| AzureSearch
+    LoaderProg -->|"reads"| SchemaFiles
+    LoaderProg -->|"creates index and imports docs"| LoaderHttp
+    LoaderHttp -->|"REST API"| AzureSearch
+</div>
+<h3 id="technology-stack-summary">Technology Stack Summary</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Layer</th><th>Technology</th><th>Version</th><th>Purpose</th>
+</tr></thead><tbody>
+<tr><td>Presentation</td><td>ASP.NET MVC</td><td>5.2.2</td><td>Serves UI and JSON endpoints for job search flows</td></tr>
+<tr><td>Business / Query</td><td>Custom <code>JobsSearch</code> wrapper</td><td>N/A</td><td>Builds search, suggest, lookup, facet, and geo filter options</td></tr>
+<tr><td>Data Access</td><td>Azure.Search.Documents SDK</td><td>11.1.1</td><td>Executes document search and lookup against Azure AI Search</td></tr>
+<tr><td>Data Store</td><td>Azure AI Search</td><td>Service-managed</td><td>Stores <code>nycjobs</code> and <code>zipcodes</code> indexes</td></tr>
+<tr><td>Supporting Tool</td><td>.NET console app (<code>DataLoader</code>)</td><td>.NET Framework 4.5</td><td>Recreates indexes and uploads seed data</td></tr>
+</tbody></table></div>
+<h3 id="data-storage-external-services">Data Storage & External Services</h3>
+<p>The application does not use a relational database; persistent queryable data is held in Azure AI Search indexes (<code>nycjobs</code>, <code>zipcodes</code>). External dependencies include Azure AI Search for search operations and Bing geocoding support used by the web experience when distance filtering is requested.</p>
+<h3 id="key-architectural-decisions">Key Architectural Decisions</h3>
+<ul>
+<li>Uses a thin-controller pattern where <code>HomeController</code> delegates all search behavior to a dedicated <code>JobsSearch</code> service class.</li>
+<li>Treats Azure AI Search as the primary system of record for application reads, with schema and seed data managed separately by <code>DataLoader</code>.</li>
+<li>Keeps ingestion concerns out of the web app by isolating index lifecycle operations into a standalone console utility.</li>
+</ul>
+<h2 id="component-relationships">Component Relationships</h2>
+<div class="mermaid">
+flowchart LR
+    subgraph Presentation
+        HomeController["HomeController"]
+        Views["Razor Views (Index, JobDetails)"]
+    end
+
+    subgraph Business["Business Logic"]
+        JobsSearchComp["JobsSearch"]
+    end
+
+    subgraph DataAccess["Data Access"]
+        SearchClientJobs["SearchClient nycjobs"]
+        SearchClientZip["SearchClient zipcodes"]
+        ModelJob["NYCJob / NYCJobLookup DTOs"]
+    end
+
+    subgraph Infrastructure
+        AzureSearchSvc["Azure AI Search"]
+        DataLoaderProg["DataLoader Program"]
+        SearchHelper["AzureSearchHelper"]
+        Files["Schema_and_Data files"]
+    end
+
+    HomeController -->|"returns views"| Views
+    HomeController -->|"delegates queries"| JobsSearchComp
+    JobsSearchComp -->|"search/suggest/lookup"| SearchClientJobs
+    JobsSearchComp -->|"zip search"| SearchClientZip
+    HomeController -->|"serializes"| ModelJob
+    SearchClientJobs -->|"SDK calls"| AzureSearchSvc
+    SearchClientZip -->|"SDK calls"| AzureSearchSvc
+    DataLoaderProg -->|"uses"| SearchHelper
+    DataLoaderProg -->|"loads"| Files
+    SearchHelper -->|"HTTP index operations"| AzureSearchSvc
+</div>
+<h3 id="component-inventory">Component Inventory</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Component</th><th>Layer</th><th>Type</th><th>Responsibility</th>
+</tr></thead><tbody>
+<tr><td>HomeController</td><td>Presentation</td><td>MVC Controller</td><td>Handles index page, search, suggest, and lookup actions</td></tr>
+<tr><td>Razor Views</td><td>Presentation</td><td>View templates</td><td>Renders UI for search and job details</td></tr>
+<tr><td>JobsSearch</td><td>Business Logic</td><td>Service class</td><td>Builds Azure Search request options and executes search APIs</td></tr>
+<tr><td>NYCJob / NYCJobLookup</td><td>Data Access</td><td>DTO classes</td><td>Shapes API JSON payloads for search and lookup results</td></tr>
+<tr><td>SearchClient (<code>nycjobs</code>)</td><td>Data Access</td><td>Azure SDK client</td><td>Retrieves job documents, suggestions, and single document lookup</td></tr>
+<tr><td>SearchClient (<code>zipcodes</code>)</td><td>Data Access</td><td>Azure SDK client</td><td>Resolves zip code to geolocation for distance filtering</td></tr>
+<tr><td>DataLoader Program</td><td>Infrastructure</td><td>Console entry point</td><td>Orchestrates index deletion, creation, and bulk data upload</td></tr>
+<tr><td>AzureSearchHelper</td><td>Infrastructure</td><td>HTTP helper</td><td>Sends authenticated REST requests to Azure Search endpoints</td></tr>
+<tr><td>Schema_and_Data</td><td>Infrastructure</td><td>Seed data assets</td><td>Stores index schema and JSON batches used for import</td></tr>
+</tbody></table></div></div>
+</div>
+<div id="tab-api" class="tab-panel">
+  <div class="fact-content"><h1 id="api-service-communication-contracts">API & Service Communication Contracts</h1>
+<p>The API surface is small and concentrated in a single MVC controller that exposes read-oriented JSON endpoints for job search, suggestions, and document lookup. Communication is synchronous and primarily between the web app and Azure AI Search.</p>
+<h2 id="service-catalog">Service Catalog</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Port</th><th>Category</th><th>Purpose</th>
+</tr></thead><tbody>
+<tr><td>NYCJobsWeb</td><td>51269 (IIS Express dev setting)</td><td>API Layer</td><td>Serves UI pages and JSON endpoints for searching job data</td></tr>
+<tr><td>DataLoader</td><td>N/A (console process)</td><td>Business</td><td>Imports schema/data into Azure AI Search indexes</td></tr>
+<tr><td>Azure AI Search (external)</td><td>443</td><td>Infrastructure</td><td>Hosts <code>nycjobs</code> and <code>zipcodes</code> indexes queried by the app</td></tr>
+</tbody></table></div>
+<h2 id="api-endpoints-inventory">API Endpoints Inventory</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Method</th><th>Path</th><th>Request Type</th><th>Response Type</th>
+</tr></thead><tbody>
+<tr><td>NYCJobsWeb / HomeController</td><td>GET</td><td>/Home/Index</td><td>None</td><td>HTML view</td></tr>
+<tr><td>NYCJobsWeb / HomeController</td><td>GET</td><td>/Home/JobDetails</td><td>None</td><td>HTML view</td></tr>
+<tr><td>NYCJobsWeb / HomeController</td><td>GET</td><td>/Home/Search</td><td>Query params (<code>q</code>, facets, sort, lat/lon, pagination, zipCode, maxDistance)</td><td>JSON <code>NYCJob</code></td></tr>
+<tr><td>NYCJobsWeb / HomeController</td><td>GET</td><td>/Home/Suggest</td><td>Query params (<code>term</code>, <code>fuzzy</code>)</td><td>JSON string array</td></tr>
+<tr><td>NYCJobsWeb / HomeController</td><td>GET</td><td>/Home/LookUp</td><td>Query param (<code>id</code>)</td><td>JSON <code>NYCJobLookup</code></td></tr>
+</tbody></table></div>
+<h2 id="management-observability-endpoints">Management & Observability Endpoints</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Endpoint</th><th>Custom Metrics (if any)</th>
+</tr></thead><tbody>
+<tr><td>NYCJobsWeb</td><td>None explicitly configured</td><td>None detected</td></tr>
+<tr><td>DataLoader</td><td>None</td><td>None detected</td></tr>
+</tbody></table></div>
+<h2 id="dtos-contracts">DTOs & Contracts</h2>
+<p>Contract DTOs are minimal and service-level: <code>NYCJob</code> wraps result list, facets, and total count; <code>NYCJobLookup</code> wraps a single <code>SearchDocument</code> payload. Request contracts are query-string based (no body DTOs). No OpenAPI/Swagger specs, protobuf schemas, or GraphQL schemas were found. Serialization is handled by ASP.NET MVC JSON result handling and Azure SDK <code>SearchDocument</code> types.</p>
+<h2 id="communication-patterns">Communication Patterns</h2>
+<p>Synchronous HTTP is used throughout. <code>HomeController</code> calls <code>JobsSearch</code>, which uses Azure SDK clients to issue search, suggest, and lookup requests to Azure AI Search. The DataLoader utility uses direct REST calls through <code>AzureSearchHelper</code> to recreate indexes and upload JSON batches. No asynchronous messaging, queue integration, retry/circuit-breaker library, or service discovery mechanism was detected. Startup order only affects data availability: DataLoader should populate indexes before users query the web app. Security posture is API-key based for outbound Azure Search calls; no API-level authentication/authorization controls are evident on web endpoints and TLS termination is expected at hosting layer.</p>
+<h2 id="service-technology-matrix">Service Technology Matrix</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Web</th><th>Data Access</th><th>Discovery</th><th>Gateway</th><th>Actuator</th><th>Cache</th><th>Metrics</th>
+</tr></thead><tbody>
+<tr><td>NYCJobsWeb</td><td>ASP.NET MVC 5</td><td>Azure.Search.Documents SDK</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td></tr>
+<tr><td>DataLoader</td><td>None (console)</td><td>HttpClient + Azure Search REST</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td></tr>
+</tbody></table></div>
+<h2 id="service-communication-sequence">Service Communication Sequence</h2>
+<div class="mermaid">
+sequenceDiagram
+    participant User as "User Browser"
+    participant Home as "HomeController"
+    participant Jobs as "JobsSearch"
+    participant Zip as "Zipcodes Index"
+    participant JobIdx as "NYCJobs Index"
+
+    User->>Home: GET /Home/Search?q=<query>&maxDistance=<n>
+    alt Distance filter requested
+        Home->>Jobs: SearchZip(zipCode)
+        Jobs->>Zip: Azure Search query
+        Zip-->>Jobs: geo_location
+    end
+    Home->>Jobs: Search(query, facets, sort, geo)
+    Jobs->>JobIdx: Azure Search query with options
+    JobIdx-->>Jobs: SearchResults<SearchDocument>
+    Jobs-->>Home: Results + facets + count
+    Home-->>User: JSON NYCJob payload
+</div></div>
+</div>
+<div id="tab-config" class="tab-panel">
+  <div class="fact-content"><h1 id="configuration-externalized-settings-inventory">Configuration & Externalized Settings Inventory</h1>
+<p>Configuration is file-driven and split across ASP.NET web configuration and console app settings, with service credentials provided through app settings placeholders. Build/runtime profile usage is minimal and mostly limited to Debug/Release transforms.</p>
+<h2 id="configuration-sources">Configuration Sources</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Source</th><th>Type</th><th>Path/Location</th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>Web.config</td><td>ASP.NET app config</td><td><code>NYCJobsWeb/Web.config</code></td><td>Primary runtime settings for web app and assembly binding redirects</td></tr>
+<tr><td>Web.Debug.config</td><td>Transform</td><td><code>NYCJobsWeb/Web.Debug.config</code></td><td>Debug transform template (mostly comments)</td></tr>
+<tr><td>Web.Release.config</td><td>Transform</td><td><code>NYCJobsWeb/Web.Release.config</code></td><td>Removes debug compilation attribute for release</td></tr>
+<tr><td>packages.config (web)</td><td>Package config</td><td><code>NYCJobsWeb/packages.config</code></td><td>Declared NuGet package versions</td></tr>
+<tr><td>App.config</td><td>Console config</td><td><code>DataLoader/DataLoader/App.config</code></td><td>Target Azure Search service name and API key placeholders</td></tr>
+<tr><td>packages.config (loader)</td><td>Package config</td><td><code>DataLoader/DataLoader/packages.config</code></td><td>Loader dependency declarations</td></tr>
+<tr><td>Schema and seed JSON</td><td>Data/config assets</td><td><code>NYCJobsWeb/Schema_and_Data/*</code></td><td>Defines index schemas and import payloads used by DataLoader</td></tr>
+</tbody></table></div>
+<h2 id="build-profiles">Build Profiles</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Profile</th><th>Activation</th><th>Purpose</th><th>Key Dependencies/Plugins</th>
+</tr></thead><tbody>
+<tr><td>Debug (NYCJobsWeb/DataLoader)</td><td>Default or <code>/p:Configuration=Debug</code></td><td>Local development with debug symbols</td><td>Standard MSBuild targets</td></tr>
+<tr><td>Release (NYCJobsWeb/DataLoader)</td><td><code>/p:Configuration=Release</code></td><td>Optimized build artifacts</td><td>Standard MSBuild targets</td></tr>
+</tbody></table></div>
+<h2 id="runtime-profiles">Runtime Profiles</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Profile</th><th>Activation Method</th><th>Config Files</th><th>Key Overrides</th>
+</tr></thead><tbody>
+<tr><td>Default (web)</td><td>ASP.NET host startup</td><td><code>Web.config</code></td><td>Search service/app settings and assembly binding redirects</td></tr>
+<tr><td>Default (loader)</td><td>Console startup</td><td><code>App.config</code></td><td>Target service name/API key for import operations</td></tr>
+</tbody></table></div>
+<h2 id="properties-inventory">Properties Inventory</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Property Key</th><th>Default</th><th>Profiles</th><th>Source</th>
+</tr></thead><tbody>
+<tr><td>BingApiKey</td><td>Empty/placeholder</td><td>Default</td><td><code>NYCJobsWeb/Web.config</code></td></tr>
+<tr><td>SearchServiceName</td><td><code>azs-playground</code></td><td>Default</td><td><code>NYCJobsWeb/Web.config</code></td></tr>
+<tr><td>SearchServiceApiKey</td><td><code><api-key></code> placeholder</td><td>Default</td><td><code>NYCJobsWeb/Web.config</code></td></tr>
+<tr><td>webpages:Version</td><td><code>3.0.0.0</code></td><td>Default</td><td><code>NYCJobsWeb/Web.config</code></td></tr>
+<tr><td>webpages:Enabled</td><td><code>false</code></td><td>Default</td><td><code>NYCJobsWeb/Web.config</code></td></tr>
+<tr><td>ClientValidationEnabled</td><td><code>true</code></td><td>Default</td><td><code>NYCJobsWeb/Web.config</code></td></tr>
+<tr><td>UnobtrusiveJavaScriptEnabled</td><td><code>true</code></td><td>Default</td><td><code>NYCJobsWeb/Web.config</code></td></tr>
+<tr><td>TargetSearchServiceName</td><td>Placeholder string</td><td>Default</td><td><code>DataLoader/DataLoader/App.config</code></td></tr>
+<tr><td>TargetSearchServiceApiKey</td><td>Placeholder string</td><td>Default</td><td><code>DataLoader/DataLoader/App.config</code></td></tr>
+</tbody></table></div>
+<h2 id="startup-parameters-resource-requirements">Startup Parameters & Resource Requirements</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>JVM/Runtime Options</th><th>Memory</th><th>Instance Count</th>
+</tr></thead><tbody>
+<tr><td>NYCJobsWeb</td><td>.NET Framework 4.7.2 ASP.NET runtime</td><td>Not explicitly configured</td><td>Not specified</td></tr>
+<tr><td>DataLoader</td><td>.NET Framework 4.5 console runtime</td><td>Not explicitly configured</td><td>On-demand execution</td></tr>
+</tbody></table></div>
+<h2 id="startup-dependency-chain">Startup Dependency Chain</h2>
+<ol>
+<li>Azure AI Search service must be available before DataLoader or web search queries can succeed.</li>
+<li>DataLoader (optional but operationally important) populates <code>nycjobs</code> and <code>zipcodes</code> indexes before web usage.</li>
+<li>NYCJobsWeb starts and serves routes; search endpoints depend on configured service endpoint and API key.</li>
+</ol>
+<h2 id="secrets-sensitive-configuration">Secrets & Sensitive Configuration</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Secret Reference</th><th>Type</th><th>Storage (masked)</th>
+</tr></thead><tbody>
+<tr><td><code>SearchServiceApiKey</code></td><td>API key</td><td><code>Web.config</code> appSetting value <code>[MASKED/placeholder]</code></td></tr>
+<tr><td><code>TargetSearchServiceApiKey</code></td><td>API key</td><td><code>App.config</code> appSetting value <code>[MASKED/placeholder]</code></td></tr>
+<tr><td><code>BingApiKey</code></td><td>API key</td><td><code>Web.config</code> appSetting value <code>[MASKED/placeholder]</code></td></tr>
+</tbody></table></div>
+<h3 id="secrets-provisioning-workflow">Secrets Provisioning Workflow</h3>
+<p>Secrets are expected to be injected into configuration files (or equivalent deployment-time transforms) before runtime. The web app and DataLoader both read API keys from local configuration and attach them to outbound requests to Azure services. No managed identity or external secret store integration is declared in the repository.</p>
+<h2 id="feature-flags">Feature Flags</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Flag Name</th><th>Default</th><th>Controlled By</th>
+</tr></thead><tbody>
+<tr><td>None detected</td><td>N/A</td><td>N/A</td></tr>
+</tbody></table></div>
+<h2 id="framework-runtime-versions">Framework & Runtime Versions</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Component</th><th>Version</th><th>Source</th>
+</tr></thead><tbody>
+<tr><td>.NET Framework (web app)</td><td>4.7.2</td><td><code>NYCJobsWeb.csproj</code>, <code>Web.config</code></td></tr>
+<tr><td>.NET Framework (DataLoader)</td><td>4.5</td><td><code>DataLoader.csproj</code>, <code>App.config</code></td></tr>
+<tr><td>ASP.NET MVC</td><td>5.2.2</td><td><code>NYCJobsWeb/packages.config</code></td></tr>
+<tr><td>Azure.Search.Documents</td><td>11.1.1</td><td><code>NYCJobsWeb/packages.config</code></td></tr>
+<tr><td>Azure.Core</td><td>1.4.1</td><td><code>NYCJobsWeb/packages.config</code></td></tr>
+<tr><td>Newtonsoft.Json</td><td>10.0.3 (web), 9.0.1 (loader)</td><td><code>packages.config</code> files</td></tr>
+<tr><td>jQuery</td><td>3.1.1</td><td><code>NYCJobsWeb/packages.config</code></td></tr>
+<tr><td>Bootstrap</td><td>3.4.1</td><td><code>NYCJobsWeb/packages.config</code></td></tr>
+</tbody></table></div></div>
+</div>
+<div id="tab-workflows" class="tab-panel">
+  <div class="fact-content"><h1 id="core-business-workflows">Core Business Workflows</h1>
+<p>The application helps users discover and inspect NYC job postings by searching and filtering indexed documents. A secondary operational workflow manages loading and refreshing index data used by the search experience.</p>
+<h2 id="domain-entities">Domain Entities</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Entity</th><th>Service / Bounded Context</th><th>Description</th><th>Key Relationships</th>
+</tr></thead><tbody>
+<tr><td>Job Posting</td><td>NYCJobsWeb / Job Discovery</td><td>Searchable representation of an open NYC role</td><td>Returned in search result collections and lookup payloads</td></tr>
+<tr><td>Zip Code Geo Record</td><td>NYCJobsWeb / Location Filtering</td><td>Geospatial reference for distance-based filtering</td><td>Used to resolve geo point before executing distance queries</td></tr>
+<tr><td>Search Facet Group</td><td>NYCJobsWeb / Search Navigation</td><td>Buckets for business title, posting type, salary range, etc.</td><td>Generated alongside result sets for UI filtering</td></tr>
+<tr><td>Index Schema Batch</td><td>DataLoader / Search Index Maintenance</td><td>Schema and JSON import artifacts for search indexes</td><td>Drives index creation and document upload workflow</td></tr>
+</tbody></table></div>
+<h2 id="service-to-domain-mapping">Service-to-Domain Mapping</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Domain Context</th><th>Owned Entities</th><th>External Dependencies</th>
+</tr></thead><tbody>
+<tr><td>NYCJobsWeb</td><td>Job Discovery</td><td>Job Posting view models, Search Facet Group wrappers</td><td>Azure AI Search <code>nycjobs</code> and <code>zipcodes</code> indexes</td></tr>
+<tr><td>DataLoader</td><td>Search Index Maintenance</td><td>Index schema batch and import workflow state</td><td>Azure AI Search REST API</td></tr>
+</tbody></table></div>
+<h2 id="primary-workflows">Primary Workflows</h2>
+<h3 id="workflow-1-search-job-postings-with-optional-distance-filtering">Workflow 1: Search job postings with optional distance filtering</h3>
+<ol>
+<li>User submits <code>/Home/Search</code> with free-text query and optional facets.</li>
+<li>If distance filtering is requested, the system resolves zip code coordinates from the zip index.</li>
+<li>Search options are assembled (facets, ordering, highlighting, filter clauses).</li>
+<li>Query executes against the jobs index.</li>
+<li>Results, facets, and count are wrapped in <code>NYCJob</code> and returned as JSON.</li>
+</ol>
+<p>Business rules involved: blank query is converted to wildcard (<code>*</code>), distance filter is only applied when <code>maxDistance > 0</code>, and sort behavior follows selected sort mode.</p>
+<h3 id="workflow-2-retrieve-search-suggestions-and-job-detail">Workflow 2: Retrieve search suggestions and job detail</h3>
+<ol>
+<li>User types a term and calls <code>/Home/Suggest</code>.</li>
+<li>Suggest endpoint executes fuzzy/non-fuzzy suggest query and deduplicates returned text values.</li>
+<li>User selects an item and calls <code>/Home/LookUp?id=<id></code>.</li>
+<li>Lookup returns a single job document wrapped as <code>NYCJobLookup</code>.</li>
+</ol>
+<p>Business rules involved: suggestion values are distinct before response; lookup only executes when an ID is provided.</p>
+<h3 id="workflow-3-refresh-azure-search-indexes-operational">Workflow 3: Refresh Azure Search indexes (operational)</h3>
+<ol>
+<li>Operator runs DataLoader console.</li>
+<li>Process deletes each target index, recreates schema, then uploads JSON batches.</li>
+<li>Operation repeats for <code>zipcodes</code> and <code>nycjobs</code> indexes.</li>
+</ol>
+<p>Business rules involved: index recreation occurs before import; failures are logged to console and process continues per step-level handling.</p>
+<h2 id="cross-service-data-flows">Cross-Service Data Flows</h2>
+<p>The primary cross-service flow is web-to-search-service communication. The web app composes user query inputs, optionally enriches with geolocation from zip index data, then queries the jobs index and returns composed result payloads. Degraded behavior occurs when search service calls fail: controller/service catches exceptions and returns null or partial behavior rather than retry/circuit-breaker fallback.</p>
+<h2 id="business-workflow-sequence">Business Workflow Sequence</h2>
+<div class="mermaid">
+sequenceDiagram
+    participant User
+    participant Web as "NYCJobsWeb"
+    participant Zip as "Zipcodes Index"
+    participant Jobs as "NYCJobs Index"
+
+    User->>Web: Search jobs with filters
+    alt Distance filter selected
+        Web->>Zip: Resolve zip code to geo point
+        Zip-->>Web: Geo coordinates
+    else Distance filter not selected
+        Note over Web: Use provided map center defaults
+    end
+    Web->>Jobs: Execute search with facets and sort rules
+    Jobs-->>Web: Matching jobs + facets + count
+    Web-->>User: Return search response
+</div>
+<h2 id="business-rules-decision-logic">Business Rules & Decision Logic</h2>
+<ul>
+<li>Empty or whitespace search text is normalized to wildcard search for broader discovery.</li>
+<li>Sorting decisions map to explicit modes (<code>featured</code>, <code>salaryDesc</code>, <code>salaryIncr</code>, <code>mostRecent</code>).</li>
+<li>Distance filtering requires successful zip lookup before geo-distance predicate is added.</li>
+<li>Suggest results are deduplicated before response to reduce noisy UX.</li>
+<li>Operational index refresh follows a strict sequence: delete index, create schema, upload documents.</li>
+</ul></div>
+</div>
+<div id="tab-deps" class="tab-panel">
+  <div class="fact-content"><h1 id="dependency-map">Dependency Map</h1>
+<p>This repository declares about 28 primary external dependencies across two .NET Framework projects, focused on ASP.NET MVC presentation and Azure Search integration.</p>
+<h2 id="dependencies">Dependencies</h2>
+<div class="mermaid">
+flowchart LR
+    App["JobSearch Solution"]
+
+    subgraph Web["Web Frameworks"]
+        AspMvc["Microsoft.AspNet.Mvc v5.2.2"]
+        Razor["Microsoft.AspNet.Razor v3.2.2"]
+        WebPages["Microsoft.AspNet.WebPages v3.2.2"]
+        WebInfra["Microsoft.Web.Infrastructure v1.0.0"]
+    end
+
+    subgraph Data["Database / ORM"]
+        AzureSearchDocs["Azure.Search.Documents v11.1.1"]
+        AzureCore["Azure.Core v1.4.1"]
+        Spatial["Microsoft.Spatial v7.5.3"]
+    end
+
+    subgraph Logging["Logging"]
+        NoteLog["No dedicated logging framework"]
+    end
+
+    subgraph Security["Security"]
+        ApiKeyAuth["API-key based service auth"]
+    end
+
+    subgraph Util["Utilities"]
+        Newtonsoft10["Newtonsoft.Json v10.0.3"]
+        Newtonsoft9["Newtonsoft.Json v9.0.1"]
+        AsyncInterfaces["Microsoft.Bcl.AsyncInterfaces v1.0.0"]
+        Buffers["System.Buffers v4.5.0"]
+        Memory["System.Memory v4.5.3"]
+        Unsafe["System.Runtime.CompilerServices.Unsafe v4.6.0"]
+        TextJson["System.Text.Json v4.6.0"]
+        BingHelper["BingGeocodingHelper v1.1"]
+        Bootstrap["bootstrap v3.4.1"]
+        JQuery["jQuery v3.1.1"]
+    end
+
+    App -->|"web"| Web
+    App -->|"search SDK"| Data
+    App -->|"logging"| Logging
+    App -->|"security"| Security
+    App -->|"utilities"| Util
+    AzureSearchDocs -.->|"depends on"| AzureCore
+</div>
+<h3 id="dependency-summary">Dependency Summary</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Category</th><th>Count</th><th>Key Libraries</th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>Web Frameworks</td><td>4</td><td>Microsoft.AspNet.Mvc, Razor, WebPages</td><td>Legacy ASP.NET MVC stack on .NET Framework</td></tr>
+<tr><td>Database / ORM</td><td>3</td><td>Azure.Search.Documents, Azure.Core, Microsoft.Spatial</td><td>Search-index data access instead of relational ORM</td></tr>
+<tr><td>Logging</td><td>0</td><td>N/A</td><td>Uses console/error output only</td></tr>
+<tr><td>Security</td><td>1</td><td>API key auth pattern</td><td>API keys stored in config values</td></tr>
+<tr><td>Utilities</td><td>20+</td><td>Newtonsoft.Json, System.* backports, jQuery, Bootstrap</td><td>Mix of framework support packages and frontend libraries</td></tr>
+</tbody></table></div>
+<h3 id="version-compatibility-risks">Version & Compatibility Risks</h3>
+<p>The codebase targets .NET Framework 4.7.2 and 4.5-era dependencies; several packages (ASP.NET MVC 5.x, older System.* compatibility packages, Newtonsoft 9/10 split) indicate modernization pressure for current .NET runtimes. Azure.Search.Documents 11.1.1 is relatively old and may require API updates when moving to net10.</p>
+<h3 id="notable-observations">Notable Observations</h3>
+<ul>
+<li>Two different Newtonsoft.Json major versions are used across projects (<code>9.0.1</code> in DataLoader, <code>10.0.3</code> in web app).</li>
+<li>Front-end dependencies are older (<code>bootstrap 3.4.1</code>, <code>jQuery 3.1.1</code>) and may require compatibility review for modernization.</li>
+<li>No explicit resilience, telemetry, or structured logging dependency is declared.</li>
+<li>Search behavior relies heavily on Azure SDK and service-side scoring profiles, reducing local persistence complexity.</li>
+</ul>
+<h2 id="test-dependencies">Test Dependencies</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Framework</th><th>Version</th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>None detected</td><td>N/A</td><td>No test framework packages found in <code>packages.config</code> or project references</td></tr>
+</tbody></table></div>
+<p>Total test-scope dependencies: 0</p>
+<p>No test dependencies detected.</p></div>
+</div>
+<div id="tab-data" class="tab-panel">
+  <div class="fact-content"><h1 id="data-architecture-persistence-layer">Data Architecture & Persistence Layer</h1>
+<p>The data layer is search-index centric: the application reads from Azure AI Search indexes rather than a relational database. Persistence behavior is split between read APIs in the web app and index lifecycle/data import operations in a console utility.</p>
+<h2 id="database-configuration">Database Configuration</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service/Module</th><th>DB Type</th><th>Profile</th><th>Driver</th><th>Connection</th><th>Migration Tool</th>
+</tr></thead><tbody>
+<tr><td>NYCJobsWeb</td><td>Azure AI Search (document index)</td><td>Default (<code>Web.config</code>)</td><td>Azure.Search.Documents SDK</td><td>Endpoint + API key from app settings</td><td>None detected</td></tr>
+<tr><td>DataLoader</td><td>Azure AI Search (document index)</td><td>Default (<code>App.config</code>)</td><td>HttpClient + REST API</td><td>Service URI built from <code>TargetSearchServiceName</code> and API key header</td><td>Schema/data JSON files applied by loader</td></tr>
+</tbody></table></div>
+<h2 id="data-ownership-per-service">Data Ownership per Service</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Tables Owned</th><th>ORM Framework</th><th>Caching</th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>NYCJobsWeb</td><td><code>nycjobs</code> index documents (read access), <code>zipcodes</code> index documents (read access)</td><td>None (SDK document model)</td><td>None</td><td>Reads and filters indexed documents only</td></tr>
+<tr><td>DataLoader</td><td><code>nycjobs</code> and <code>zipcodes</code> index schema/data publication</td><td>None (REST calls)</td><td>None</td><td>Recreates index definitions and bulk uploads JSON files</td></tr>
+</tbody></table></div>
+<h2 id="entity-model">Entity Model</h2>
+<div class="mermaid">
+erDiagram
+    NYCJOB ||--o{ NYCJOBRESULT : "contains"
+    NYCJOB ||--o{ FACETGROUP : "includes"
+    NYCJOBLOOKUP ||--|| SEARCHDOCUMENT : "wraps"
+    ZIPCODE ||--o{ NYCJOBRESULT : "filters by distance"
+
+    NYCJOB {
+        string Id PK
+        int Count
+        string FacetsSummary
+    }
+
+    NYCJOBRESULT {
+        string Id PK
+        string Agency
+        string BusinessTitle
+        int SalaryRangeFrom
+        int SalaryRangeTo
+        string PostingType
+        string GeoLocation
+    }
+
+    NYCJOBLOOKUP {
+        string Id PK
+        string ResultReference
+    }
+
+    FACETGROUP {
+        string Name PK
+        string Values
+    }
+
+    ZIPCODE {
+        string ZipCode PK
+        string City
+        string State
+        string County
+        string GeoLocation
+    }
+
+    SEARCHDOCUMENT {
+        string DocumentId PK
+        string Payload
+    }
+</div>
+<h2 id="key-repository-methods">Key Repository Methods</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Repository</th><th>Notable Methods</th><th>Purpose</th>
+</tr></thead><tbody>
+<tr><td>NYCJobsWeb</td><td><code>JobsSearch</code> (<code>JobsSearch.cs</code>)</td><td><code>Search(...)</code>, <code>SearchZip(...)</code>, <code>Suggest(...)</code>, <code>LookUp(...)</code></td><td>Encapsulates all query and lookup behavior against Azure Search indexes</td></tr>
+<tr><td>DataLoader</td><td><code>Program</code> + <code>AzureSearchHelper</code></td><td><code>LaunchImportProcess(...)</code>, <code>DeleteIndex(...)</code>, <code>CreateTargetIndex(...)</code>, <code>ImportFromJSON(...)</code>, <code>SendSearchRequest(...)</code></td><td>Manages index lifecycle and uploads seed data batches</td></tr>
+</tbody></table></div>
+<h2 id="caching-strategy">Caching Strategy</h2>
+<p>No explicit application cache provider or cache-aside/write-through pattern was found. Query responses are fetched directly from Azure AI Search on each request, with any caching behavior delegated to Azure service internals or infrastructure layers outside this codebase.</p>
+<h2 id="data-ownership-boundaries">Data Ownership Boundaries</h2>
+<p>Data storage is centralized in shared Azure AI Search service indexes. The web app is read/query focused and never mutates domain documents directly, while DataLoader is the ingestion and schema-management authority. Cross-component data access occurs through service APIs (Azure SDK in web app, REST in DataLoader) rather than shared in-memory models.</p>
+<h3 id="data-classification-sensitivity">Data Classification & Sensitivity</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Entity</th><th>Sensitive Fields</th><th>Classification (PII/PHI/PCI/None)</th><th>Controls in Place</th>
+</tr></thead><tbody>
+<tr><td>NYCJOBRESULT</td><td><code>work_location</code>, <code>recruitment_contact</code> (if present in indexed docs)</td><td>PII (possible contact/location data)</td><td>API-key access to search service; no explicit field masking or encryption controls in code</td></tr>
+<tr><td>ZIPCODE</td><td>Geographic location fields</td><td>None</td><td>Public geographic reference data</td></tr>
+<tr><td>NYCJOB / NYCJOBLOOKUP wrappers</td><td>None directly (container objects)</td><td>None</td><td>N/A</td></tr>
+</tbody></table></div></div>
+</div>
+<p class="footer">Your feedback is invaluable &mdash; <a href="https://aka.ms/ghcp-appmod/feedback">Share feedback</a></p>
+<script>
+function toggleRow(rowId, triggerRow) {
+  var detail = document.getElementById(rowId);
+  var btn = document.getElementById('btn-' + rowId);
+  if (!detail) return;
+  var visible = detail.style.display !== 'none';
+  detail.style.display = visible ? 'none' : 'table-row';
+  if (btn) btn.classList.toggle('open', !visible);
+}
+(function() {
+  var nav = document.querySelector('.tab-nav');
+  if (!nav) return;
+  nav.addEventListener('click', function(e) {
+    var btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    var targetId = btn.getAttribute('data-tab');
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    var panel = document.getElementById(targetId);
+    if (panel) {
+      panel.classList.add('active');
+      if (window.__mermaidReady) { window.__renderMermaidIn(panel); }
+    }
+  });
+})();
+
+// ── Diagram lightbox ────────────────────────────────────────
+(function() {
+  var lightbox = document.getElementById('diagram-lightbox');
+  var inner = document.getElementById('diagram-lightbox-inner');
+  var closeBtn = document.getElementById('diagram-lightbox-close');
+  if (!lightbox || !inner || !closeBtn) return;
+
+  var scale = 1;
+  var translateX = 0;
+  var translateY = 0;
+  var isDragging = false;
+  var dragStartX = 0;
+  var dragStartY = 0;
+
+  function applyTransform() {
+    var svg = inner.querySelector('svg');
+    if (svg) {
+      svg.style.transform = 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + scale + ')';
+      svg.style.transformOrigin = 'center center';
+      svg.style.transition = 'none';
+    }
+  }
+
+  function resetTransform() {
+    scale = 1; translateX = 0; translateY = 0;
+    applyTransform();
+  }
+
+  function openLightbox(svgEl) {
+    inner.innerHTML = svgEl.outerHTML;
+    var injected = inner.querySelector('svg');
+    if (injected) {
+      injected.removeAttribute('width');
+      injected.removeAttribute('height');
+      injected.style.cursor = 'grab';
+    }
+    resetTransform();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    inner.innerHTML = '';
+    document.body.style.overflow = '';
+    resetTransform();
+  }
+
+  inner.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.min(Math.max(scale * delta, 0.3), 8);
+    applyTransform();
+  }, { passive: false });
+
+  inner.addEventListener('mousedown', function(e) {
+    if (e.button !== 0) return;
+    isDragging = true;
+    dragStartX = e.clientX - translateX;
+    dragStartY = e.clientY - translateY;
+    var svg = inner.querySelector('svg');
+    if (svg) { svg.style.cursor = 'grabbing'; }
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    translateX = e.clientX - dragStartX;
+    translateY = e.clientY - dragStartY;
+    applyTransform();
+  });
+
+  document.addEventListener('mouseup', function() {
+    if (!isDragging) return;
+    isDragging = false;
+    var svg = inner.querySelector('svg');
+    if (svg) { svg.style.cursor = 'grab'; }
+  });
+
+  inner.addEventListener('dblclick', function() { resetTransform(); });
+
+  document.addEventListener('click', function(e) {
+    var card = e.target.closest('.mermaid');
+    if (!card) return;
+    if (e.target.closest('.diagram-lightbox-close')) return;
+    var svg = card.querySelector('svg');
+    if (svg) { openLightbox(svg); }
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) { closeLightbox(); }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { closeLightbox(); }
+  });
+})();
+
+var _currentTarget = '';
+
+function toggleMultiSelect(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  document.querySelectorAll('.multi-select.open').forEach(function(ms) { if (ms.id !== id) ms.classList.remove('open'); });
+  el.classList.toggle('open');
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.multi-select')) {
+    document.querySelectorAll('.multi-select.open').forEach(function(ms) { ms.classList.remove('open'); });
+  }
+});
+
+function getMultiSelectValues(msId) {
+  var el = document.getElementById(msId);
+  if (!el) return [];
+  var checked = el.querySelectorAll('input[type=checkbox]:checked');
+  var vals = [];
+  for (var i = 0; i < checked.length; i++) vals.push(checked[i].value);
+  return vals;
+}
+
+function onMultiSelectChange(msId, label) {
+  var el = document.getElementById(msId);
+  if (!el) return;
+  var vals = getMultiSelectValues(msId);
+  var total = el.querySelectorAll('input[type=checkbox]').length;
+  var btn = el.querySelector('.multi-select-btn');
+  if (btn) {
+    btn.textContent = vals.length > 0 && vals.length < total ? label + ' (' + vals.length + ')' : label;
+  }
+  applyFilters();
+}
+
+function applyFilters() {
+  var selectedDomains = getMultiSelectValues('domain-ms');
+  var selectedCrits = getMultiSelectValues('criticality-ms');
+
+  var sections = document.querySelectorAll('.issue-section');
+  for (var i = 0; i < sections.length; i++) {
+    var domain = sections[i].getAttribute('data-domain');
+    sections[i].style.display = (selectedDomains.length === 0 || selectedDomains.indexOf(domain) >= 0) ? '' : 'none';
+  }
+
+  var rows = document.querySelectorAll('.issue-row');
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var section = row.closest('.issue-section');
+    if (section && section.style.display === 'none') {
+      row.style.display = 'none';
+      var next = row.nextElementSibling;
+      if (next && next.classList.contains('detail-row')) next.style.display = 'none';
+      continue;
+    }
+
+    var show = true;
+    if (_currentTarget && row.hasAttribute('data-targets')) {
+      var targetsStr = row.getAttribute('data-targets');
+      if (targetsStr && targetsStr !== '{}') {
+        try {
+          var targets = JSON.parse(targetsStr);
+          if (Object.keys(targets).length > 0 && !targets[_currentTarget]) {
+            show = false;
+          }
+        } catch(e) {}
+      }
+    }
+
+    if (show && selectedCrits.length > 0) {
+      var crit = row.getAttribute('data-criticality');
+      if (selectedCrits.indexOf(crit) < 0) show = false;
+    }
+
+    row.style.display = show ? '' : 'none';
+    var nextRow = row.nextElementSibling;
+    if (nextRow && nextRow.classList.contains('detail-row')) {
+      if (!show) nextRow.style.display = 'none';
+    }
+  }
+}
+
+function clearAllFilters() {
+  document.querySelectorAll('.multi-select input[type=checkbox]').forEach(function(cb) { cb.checked = false; });
+  var domainBtn = document.querySelector('#domain-ms .multi-select-btn');
+  if (domainBtn) domainBtn.textContent = 'Domain';
+  var critBtn = document.querySelector('#criticality-ms .multi-select-btn');
+  if (critBtn) critBtn.textContent = 'Criticality';
+  applyFilters();
+}
+
+function onTargetChange(targetId) {
+  _currentTarget = targetId;
+  var rows = document.querySelectorAll('.issue-row[data-targets]');
+  var totalEffort = 0;
+  var domainCrits = {};
+
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var targets = JSON.parse(row.getAttribute('data-targets'));
+    var section = row.closest('.issue-section');
+    var domain = section ? section.getAttribute('data-domain') : '';
+
+    if (!targets || Object.keys(targets).length === 0) {
+      var sp = parseFloat(row.querySelector('.sp-cell').textContent) || 0;
+      totalEffort += sp;
+      if (!domainCrits[domain]) domainCrits[domain] = {mandatory:0,potential:0,optional:0};
+      var crit = row.getAttribute('data-criticality') || 'optional';
+      domainCrits[domain][crit] = (domainCrits[domain][crit] || 0) + 1;
+      continue;
+    }
+
+    var override = targets[targetId];
+    if (!override) {
+      continue;
+    }
+
+    var newSeverity = (override.severity || row.getAttribute('data-default-severity') || '').toLowerCase();
+    row.setAttribute('data-criticality', newSeverity);
+    var critCell = row.querySelector('.crit-cell');
+    if (critCell) {
+      var critText = newSeverity === 'mandatory' ? 'Mandatory' : newSeverity === 'potential' ? 'Potential' : 'Optional';
+      var cssClass = newSeverity === 'mandatory' ? 'crit-square-mandatory' : newSeverity === 'potential' ? 'crit-square-potential' : 'crit-square-optional';
+      critCell.innerHTML = '<span class="crit-label"><span class="crit-square ' + cssClass + '"></span>' + critText + '</span>';
+    }
+
+    var newEffort = override.effort !== undefined ? override.effort : parseFloat(row.getAttribute('data-default-effort')) || 0;
+    var spCell = row.querySelector('.sp-cell');
+    if (spCell) spCell.textContent = newEffort;
+    totalEffort += newEffort;
+
+    if (!domainCrits[domain]) domainCrits[domain] = {mandatory:0,potential:0,optional:0};
+    domainCrits[domain][newSeverity] = (domainCrits[domain][newSeverity] || 0) + 1;
+  }
+
+  var secSection = document.querySelector('.issue-section[data-domain="security"]');
+  if (secSection) {
+    var secRows = secSection.querySelectorAll('.issue-row');
+    for (var j = 0; j < secRows.length; j++) {
+      if (!secRows[j].hasAttribute('data-targets') || secRows[j].getAttribute('data-targets') === '') {
+        var sp = parseFloat(secRows[j].querySelector('.sp-cell').textContent) || 0;
+        totalEffort += sp;
+        if (!domainCrits['security']) domainCrits['security'] = {mandatory:0,potential:0,optional:0};
+        var sc = secRows[j].getAttribute('data-criticality') || 'optional';
+        domainCrits['security'][sc] = (domainCrits['security'][sc] || 0) + 1;
+      }
+    }
+  }
+
+  var label = totalEffort < 20 ? 'S' : totalEffort < 50 ? 'M' : totalEffort < 100 ? 'L' : 'XL';
+  var effortEl = document.getElementById('effort-display');
+  if (effortEl) effortEl.textContent = label + ' (total story points: ' + totalEffort + ')';
+
+  updateDonuts(domainCrits);
+  applyFilters();
+}
+
+function updateDonuts(domainCrits) {
+  var container = document.getElementById('donut-container');
+  if (!container) return;
+  container.innerHTML = '';
+  var domainNames = {'cloud-readiness':'Cloud Readiness','java-upgrade':'Java Upgrade','dotnet-upgrade':'DotNET Upgrade','security':'Security'};
+  var domainOrder = ['cloud-readiness','java-upgrade','dotnet-upgrade','security'];
+  for (var d = 0; d < domainOrder.length; d++) {
+    var key = domainOrder[d];
+    var c = domainCrits[key];
+    if (!c || (c.mandatory + c.potential + c.optional) === 0) continue;
+    var total = c.mandatory + c.potential + c.optional;
+    var div = document.createElement('div');
+    div.className = 'domain-summary-item';
+    div.innerHTML = buildDonutSvg(c.mandatory, c.potential, c.optional) +
+      '<h3>' + domainNames[key] + '</h3>' +
+      '<div class="count">' + total + ' issue' + (total !== 1 ? 's' : '') + '</div>';
+    container.appendChild(div);
+  }
+}
+
+function buildDonutSvg(m, p, o) {
+  var total = m + p + o;
+  if (total === 0) return '<svg viewBox="0 0 100 100" width="100" height="100" style="display:block;margin:0 auto;"><circle cx="50" cy="50" r="35" fill="none" stroke="#d0d7de" stroke-width="15" opacity="0.5"/></svg>';
+  var r = 35, circ = 2 * Math.PI * r, offset = 0;
+  var svg = '<svg viewBox="0 0 100 100" width="100" height="100" style="display:block;margin:0 auto;transform:rotate(-90deg);">';
+  var segs = [{c:m,color:'var(--color-mandatory)'},{c:p,color:'var(--color-potential)'},{c:o,color:'var(--color-optional)'}];
+  for (var i = 0; i < segs.length; i++) {
+    if (segs[i].c === 0) continue;
+    var segLen = (segs[i].c / total) * circ;
+    var gap = total > segs[i].c ? 1.5 : 0;
+    var drawLen = Math.max(segLen - gap, 0.5);
+    svg += '<circle cx="50" cy="50" r="' + r + '" fill="none" stroke="' + segs[i].color + '" stroke-width="15" stroke-dasharray="' + drawLen.toFixed(2) + ' ' + circ.toFixed(2) + '" stroke-dashoffset="' + (-offset).toFixed(2) + '"/>';
+    offset += segLen;
+  }
+  svg += '</svg>';
+  return svg;
+}
+</script>
+<script>document.addEventListener('DOMContentLoaded', function() { onTargetChange('AppService.Windows'); });</script>
+</div></body></html>
