@@ -1,0 +1,108 @@
+{
+  "metadata": {
+    "id": "20261021103021",
+    "generated_at": "2026-10-21T10:30:21.0000000Z",
+    "note": "Security-only report (AppCAT was not run or failed)"
+  },
+  "security": [
+    {
+      "id": "CVE-2024-21907",
+      "title": "Improper Handling of Exceptional Conditions in Newtonsoft.Json",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Newtonsoft.Json versions before 13.0.1 may suffer denial of service from deeply nested JSON due to excessive resource use or stack overflow. Affected dependencies: Newtonsoft.Json 10.0.3 (NYCJobsWeb/packages.config:17) and Newtonsoft.Json 9.0.1 (DataLoader/DataLoader/packages.config:3). Recommended fix: upgrade to 13.0.1 or later.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:17",
+          "DataLoader/DataLoader/packages.config:3"
+        ],
+        "explanation": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Newtonsoft.Json versions before 13.0.1 may suffer denial of service from deeply nested JSON due to excessive resource use or stack overflow. Affected dependencies: Newtonsoft.Json 10.0.3 (NYCJobsWeb/packages.config:17) and Newtonsoft.Json 9.0.1 (DataLoader/DataLoader/packages.config:3). Recommended fix: upgrade to 13.0.1 or later."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2021-26701",
+      "title": ".NET Core Remote Code Execution Vulnerability",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): System.Text.Encodings.Web 4.6.0 is in the vulnerable range >= 4.6.0 and < 4.7.2. Recommended fix: upgrade to 4.7.2 or later.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:23"
+        ],
+        "explanation": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): System.Text.Encodings.Web 4.6.0 is in the vulnerable range >= 4.6.0 and < 4.7.2. Recommended fix: upgrade to 4.7.2 or later."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CWE-606",
+      "title": "Unchecked Input for Loop Condition",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product does not properly check inputs that are used for loop conditions, potentially leading to a denial of service or other consequences because of excessive looping.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml"
+        ],
+        "explanation": "In CleanText, the while condition at line 31 derives directly from the indexed job-description text. If the text contains the literal characters /\\n/g, indexOf finds that string while replace(/\\n/g, ...) does not remove it, so untrusted indexed content can keep the loop running indefinitely."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-772",
+      "title": "Missing Release of Resource after Effective Lifetime",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product does not release a resource after its effective lifetime has ended, i.e., after the resource is no longer needed.",
+      "evidence": {
+        "files": [
+          "DataLoader/DataLoader/AzureSearchHelper.cs"
+        ],
+        "explanation": "SendSearchRequest returns an HttpResponseMessage at line 65, and its callers in Program.DeleteIndex, CreateTargetIndex, and ImportFromJSON read/check the response without disposing it. Repeated requests in the import process leave response and underlying network resources unreleased until finalization."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-835",
+      "title": "Loop with Unreachable Exit Condition ('Infinite Loop')",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product contains an iteration or loop with an exit condition that cannot be reached, i.e., an infinite loop.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml"
+        ],
+        "explanation": "In CleanText, the while loop at lines 31-32 tests text.indexOf(/\\n/g), which searches for the regex literal's string representation, but replaces actual newline characters. For input containing the literal /\\n/g but no newline, the condition remains true and the replacement makes no progress, causing an infinite loop."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-798",
+      "title": "Use of Hard-coded Credentials",
+      "category": "Credentials & Secrets",
+      "severity": "optional",
+      "description": "The product contains hard-coded credentials, such as a password or cryptographic key.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/Index.cshtml"
+        ],
+        "explanation": "The GetMap function assigns a literal Bing Maps API credential to the map configuration at line 114. The credential is embedded in browser-delivered source, making it a hard-coded credential; its value is intentionally omitted from this report."
+      },
+      "storyPoint": 5
+    },
+    {
+      "id": "CWE-79",
+      "title": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+      "category": "Injection Attacks",
+      "severity": "optional",
+      "description": "The product does not neutralize or incorrectly neutralizes user-controllable input before it is placed in output that is used as a web page that is served to other users.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml"
+        ],
+        "explanation": "In UpdateJobDetails, values returned from the job lookup response are written directly to the DOM with jQuery .html(), including job_description at line 68 and business_title at line 51. The job content originates from the Azure Search index, and CleanText only replaces selected characters rather than encoding HTML, so markup in the indexed data is interpreted in other users' browsers."
+      },
+      "storyPoint": 8
+    }
+  ]
+}
