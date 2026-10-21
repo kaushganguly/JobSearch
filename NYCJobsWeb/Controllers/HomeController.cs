@@ -1,106 +1,80 @@
-﻿using BingGeocoder;
+using Microsoft.AspNetCore.Mvc;
 using NYCJobsWeb.Models;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Globalization;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 
-namespace NYCJobsWeb.Controllers
+namespace NYCJobsWeb.Controllers;
+
+public class HomeController(JobsSearch jobsSearch) : Controller
 {
-    public class HomeController : Controller
+    [HttpGet]
+    public IActionResult Index() => View();
+
+    [HttpGet]
+    public IActionResult JobDetails() => View();
+
+    [HttpPost]
+    public IActionResult Search(
+        string q = "",
+        string businessTitleFacet = "",
+        string postingTypeFacet = "",
+        string salaryRangeFacet = "",
+        string sortType = "",
+        double lat = 40.736224,
+        double lon = -73.99251,
+        int currentPage = 1,
+        int zipCode = 10001,
+        int maxDistance = 0)
     {
-        private JobsSearch _jobsSearch = new JobsSearch();
-
-        // GET: Home
-        public ActionResult Index()
+        if (string.IsNullOrWhiteSpace(q))
         {
-            return View();
+            q = "*";
         }
 
-        public ActionResult JobDetails()
+        var maxDistanceLat = string.Empty;
+        var maxDistanceLon = string.Empty;
+        if (maxDistance > 0)
         {
-            return View();
-        }
-
-        public ActionResult Search(string q = "", string businessTitleFacet = "", string postingTypeFacet = "", string salaryRangeFacet = "",
-            string sortType = "", double lat = 40.736224, double lon = -73.99251, int currentPage = 0, int zipCode = 10001,
-            int maxDistance = 0)
-        {
-            // If blank search, assume they want to search everything
-            if (string.IsNullOrWhiteSpace(q))
-                q = "*";
-
-            string maxDistanceLat = string.Empty;
-            string maxDistanceLon = string.Empty;
-
-            //Do a search of the zip code index to get lat / long of this location
-            //Eventually this should be extended to search beyond just zip (i.e. city)
-            if (maxDistance > 0)
+            var zipResponse = jobsSearch.SearchZip(zipCode.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            var zipResult = zipResponse.GetResults().FirstOrDefault();
+            if (zipResult?.Document.TryGetValue("geo_location", out var location) == true &&
+                location is Microsoft.Spatial.GeographyPoint point)
             {
-                var zipReponse = _jobsSearch.SearchZip(zipCode.ToString());
-                foreach (var result in zipReponse.GetResults())
-                {
-                    var doc = (dynamic)result.Document;
-                    maxDistanceLat = Convert.ToString(doc["geo_location"].Latitude, CultureInfo.InvariantCulture);
-                    maxDistanceLon = Convert.ToString(doc["geo_location"].Longitude, CultureInfo.InvariantCulture);
-                }
+                maxDistanceLat = point.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                maxDistanceLon = point.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
-
-            var response = _jobsSearch.Search(q, businessTitleFacet, postingTypeFacet, salaryRangeFacet, sortType, lat, lon, currentPage, maxDistance, maxDistanceLat, maxDistanceLon);
-            return new JsonResult
-            {
-                // ***************************************************************************************************************************
-                // If you get an error here, make sure to check that you updated the SearchServiceName and SearchServiceApiKey in Web.config
-                // ***************************************************************************************************************************
-
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                Data = new NYCJob() { Results = response.GetResults().ToList(), Facets = response.Facets, Count = Convert.ToInt32(response.TotalCount) }
-            };
         }
 
-        [HttpGet]
-        public ActionResult Suggest(string term, bool fuzzy = true)
+        var response = jobsSearch.Search(
+            q, businessTitleFacet, postingTypeFacet, salaryRangeFacet,
+            sortType, lat, lon, currentPage, maxDistance, maxDistanceLat, maxDistanceLon);
+
+        return Json(new NYCJob
         {
-            // Call suggest query and return results
-            var response = _jobsSearch.Suggest(term, fuzzy);
-            List<string> suggestions = new List<string>();
-            foreach (var result in response.Results)
-            {
-                suggestions.Add(result.Text);
-            }
+            Results = response.GetResults().ToList(),
+            Facets = response.Facets,
+            Count = Convert.ToInt32(response.TotalCount)
+        });
+    }
 
-            // Get unique items
-            List<string> uniqueItems = suggestions.Distinct().ToList();
+    [HttpGet]
+    public IActionResult Suggest(string term, bool fuzzy = true)
+    {
+        var suggestions = jobsSearch.Suggest(term, fuzzy).Results
+            .Select(result => result.Text)
+            .Distinct()
+            .ToList();
 
-            return new JsonResult
-            {
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                Data = uniqueItems
-            };
+        return Json(suggestions);
+    }
 
-        }
-
-        public ActionResult LookUp(string id)
+    [HttpPost]
+    public IActionResult LookUp(string id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
         {
-            // Take a key ID and do a lookup to get the job details
-            if (id != null)
-            {
-                var response = _jobsSearch.LookUp(id);
-                return new JsonResult
-                {
-                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                    Data = new NYCJobLookup() { Result = response }
-                };
-            }
-            else
-            {
-                return null;
-            }
-
+            return BadRequest();
         }
 
+        var result = jobsSearch.LookUp(id);
+        return Json(new NYCJobLookup { Result = result });
     }
 }

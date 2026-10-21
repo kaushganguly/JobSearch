@@ -16,7 +16,12 @@
         "passUnitTests": "true",
         "securityComplianceCheck": "true"
       },
-      "status": "pending"
+      "status": "success",
+      "taskSummary": "Migrated NYCJobsWeb and DataLoader to SDK-style .NET 10 projects, replacing the MVC 5 hosting model with ASP.NET Core MVC and updating configuration, assets, and Azure Search integration. Build and runtime smoke test passed. dotnet test exited successfully; no test projects are configured. Dependency advisory, secret, and CodeQL checks reported no findings.",
+      "successCriteriaStatus": {
+        "passBuild": "true",
+        "passUnitTests": "true"
+      }
     }
   ],
   "metadata": {
