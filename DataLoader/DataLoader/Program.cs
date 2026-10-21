@@ -1,112 +1,104 @@
-﻿// This is a prototype tool that allows for import of sample data to an Azure Search index
-
-using System;
-using System.Configuration;
-using System.IO;
 using System.Net.Http;
 
-namespace AzureSearchBackupRestore
+namespace AzureSearchBackupRestore;
+
+internal static class Program
 {
-    class Program
+    private static readonly HttpClient HttpClient = new();
+    private static Uri _serviceUri = null!;
+    private static string _dataDirectory = null!;
+
+    private static void Main()
     {
-        private static string TargetSearchServiceName = ConfigurationManager.AppSettings["TargetSearchServiceName"];
-        private static string TargetSearchServiceApiKey = ConfigurationManager.AppSettings["TargetSearchServiceApiKey"];
-        private static HttpClient HttpClient;
-        private static Uri ServiceUri;
-
-        static void Main(string[] args)
+        var serviceName = Environment.GetEnvironmentVariable("TARGET_SEARCH_SERVICE_NAME");
+        var apiKey = Environment.GetEnvironmentVariable("TARGET_SEARCH_SERVICE_API_KEY");
+        if (string.IsNullOrWhiteSpace(serviceName) || string.IsNullOrWhiteSpace(apiKey))
         {
-            try
-            {
-                ServiceUri = new Uri("https://" + TargetSearchServiceName + ".search.windows.net");
-                HttpClient = new HttpClient();
-                HttpClient.DefaultRequestHeaders.Add("api-key", TargetSearchServiceApiKey);
-
-                // Re-create and import content to target indexes
-                LaunchImportProcess("zipcodes");
-                LaunchImportProcess("nycjobs");
-
-                Console.WriteLine("NOTE: For really large indexes it may take some time to index all content.\r\n");
-                Console.WriteLine("Press any key to continue.\r\n");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-                Console.WriteLine("Did you remember to set your TArgetSearchServiceName and TargetSearchServiceApiKey in the app.config?\r\n");
-            }
-            Console.ReadLine();
+            Console.Error.WriteLine(
+                "Set TARGET_SEARCH_SERVICE_NAME and TARGET_SEARCH_SERVICE_API_KEY before running the data loader.");
+            Environment.ExitCode = 1;
+            return;
         }
 
-        private static void LaunchImportProcess(string IndexName)
+        try
         {
-            // Re-create and import content to target index
-            Console.WriteLine("Deleting " + IndexName + " index...");
-            DeleteIndex(IndexName);
-            Console.WriteLine("Creating " + IndexName + " index...");
-            CreateTargetIndex(IndexName);
-            Console.WriteLine("Uploading data to " + IndexName + "...");
-            ImportFromJSON(IndexName);
-        }
+            _serviceUri = new Uri($"https://{serviceName}.search.windows.net");
+            _dataDirectory = FindDataDirectory();
+            HttpClient.DefaultRequestHeaders.Add("api-key", apiKey);
 
-        private static void DeleteIndex(string IndexName)
+            LaunchImportProcess("zipcodes");
+            LaunchImportProcess("nycjobs");
+
+            Console.WriteLine("Import requests completed.");
+        }
+        catch (Exception ex)
         {
-            // Delete the index if it exists
-            try
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            Environment.ExitCode = 1;
+        }
+    }
+
+    private static void LaunchImportProcess(string indexName)
+    {
+        Console.WriteLine($"Deleting {indexName} index...");
+        DeleteIndex(indexName);
+        Console.WriteLine($"Creating {indexName} index...");
+        CreateTargetIndex(indexName);
+        Console.WriteLine($"Uploading data to {indexName}...");
+        ImportFromJson(indexName);
+    }
+
+    private static void DeleteIndex(string indexName)
+    {
+        var uri = new Uri(_serviceUri, $"/indexes/{indexName}");
+        using var response = AzureSearchHelper.SendSearchRequest(HttpClient, HttpMethod.Delete, uri);
+        if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
+        {
+            response.EnsureSuccessStatusCode();
+        }
+    }
+
+    private static void CreateTargetIndex(string indexName)
+    {
+        var schemaPath = Path.Combine(_dataDirectory, $"{indexName}.schema");
+        var json = File.ReadAllText(schemaPath);
+        var uri = new Uri(_serviceUri, "/indexes");
+        using var response = AzureSearchHelper.SendSearchRequest(HttpClient, HttpMethod.Post, uri, json);
+        response.EnsureSuccessStatusCode();
+    }
+
+    private static void ImportFromJson(string indexName)
+    {
+        var files = Directory.GetFiles(_dataDirectory, $"{indexName}*.json")
+            .OrderBy(file => file, StringComparer.Ordinal);
+        foreach (var fileName in files)
+        {
+            Console.WriteLine($"Uploading documents from file {Path.GetFileName(fileName)}");
+            var json = File.ReadAllText(fileName);
+            var uri = new Uri(_serviceUri, $"/indexes/{indexName}/docs/index");
+            using var response = AzureSearchHelper.SendSearchRequest(HttpClient, HttpMethod.Post, uri, json);
+            response.EnsureSuccessStatusCode();
+        }
+    }
+
+    private static string FindDataDirectory()
+    {
+        foreach (var start in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
+        {
+            var current = new DirectoryInfo(start);
+            while (current is not null)
             {
-                try
+                var candidate = Path.Combine(current.FullName, "NYCJobsWeb", "Schema_and_Data");
+                if (Directory.Exists(candidate))
                 {
-                    Uri uri = new Uri(ServiceUri, "/indexes/" + IndexName);
-                    HttpResponseMessage response = AzureSearchHelper.SendSearchRequest(HttpClient, HttpMethod.Delete, uri);
-                    response.EnsureSuccessStatusCode();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error: {0}", ex.Message.ToString());
+                    return candidate;
                 }
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error deleting index: {0}\r\n", ex.Message);
+                current = current.Parent;
             }
         }
 
-        static void CreateTargetIndex(string IndexName)
-        {
-            // Use the schema file to create a copy of this index
-            // I like using REST here since I can just take the response as-is
-            string json = File.ReadAllText("..\\..\\..\\..\\NYCJobsWeb\\Schema_and_Data\\" + IndexName + ".schema");
-            try
-            {
-                Uri uri = new Uri(ServiceUri, "/indexes");
-                HttpResponseMessage response = AzureSearchHelper.SendSearchRequest(HttpClient, HttpMethod.Post, uri, json);
-                response.EnsureSuccessStatusCode();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message.ToString());
-            }
-
-        }
-
-        static void ImportFromJSON(string IndexName)
-        {
-            // Take JSON file and import this as-is to target index
-            try
-            {
-                foreach (string fileName in Directory.GetFiles("..\\..\\..\\..\\NYCJobsWeb\\Schema_and_Data\\", IndexName + "*.json"))
-                {
-                    Console.WriteLine("Uploading documents from file {0}", fileName);
-                    string json = File.ReadAllText(fileName);
-                    Uri uri = new Uri(ServiceUri, "/indexes/"+ IndexName + "/docs/index");
-                    HttpResponseMessage response = AzureSearchHelper.SendSearchRequest(HttpClient, HttpMethod.Post, uri, json);
-                    response.EnsureSuccessStatusCode();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message.ToString());
-            }
-        }
+        throw new DirectoryNotFoundException(
+            "Could not find NYCJobsWeb/Schema_and_Data. Run the data loader from the repository or a build output beneath it.");
     }
 }

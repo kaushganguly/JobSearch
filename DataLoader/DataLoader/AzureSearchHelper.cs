@@ -23,7 +23,7 @@ namespace AzureSearchBackupRestore
 {
     public class AzureSearchHelper
     {
-        public const string ApiVersionString = "api-version=2015-02-28-Preview";
+        public const string ApiVersionString = "api-version=2023-11-01";
 
         private static readonly JsonSerializerSettings _jsonSettings;
 
@@ -46,10 +46,10 @@ namespace AzureSearchBackupRestore
 
         public static T DeserializeJson<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json, _jsonSettings);
+            return JsonConvert.DeserializeObject<T>(json, _jsonSettings)!;
         }
 
-        public static HttpResponseMessage SendSearchRequest(HttpClient client, HttpMethod method, Uri uri, string json = null)
+        public static HttpResponseMessage SendSearchRequest(HttpClient client, HttpMethod method, Uri uri, string? json = null)
         {
             UriBuilder builder = new UriBuilder(uri);
             string separator = string.IsNullOrWhiteSpace(builder.Query) ? string.Empty : "&";
@@ -69,7 +69,7 @@ namespace AzureSearchBackupRestore
         {
             if (!response.IsSuccessStatusCode)
             {
-                string error = response.Content == null ? null : response.Content.ReadAsStringAsync().Result;
+                string error = response.Content?.ReadAsStringAsync().Result ?? string.Empty;
                 throw new Exception("Search request failed: " + error);
             }
         }
