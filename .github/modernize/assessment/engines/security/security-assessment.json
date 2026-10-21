@@ -1,0 +1,87 @@
+{
+  "GeneratedAt": "2026-10-21T13:08:26.3630270Z",
+  "ProjectPath": ".",
+  "Summary": {
+    "TotalFindings": 5,
+    "CveCount": 2,
+    "CweCount": 3,
+    "BySeverity": {
+      "mandatory": 2,
+      "optional": 2,
+      "potential": 1
+    },
+    "ByCategory": {
+      "CVE": 2,
+      "Code Quality": 1,
+      "Credentials & Secrets": 1,
+      "Injection Attacks": 1
+    },
+    "TotalRulesAssessed": 59,
+    "RulesPassed": 56
+  },
+  "CveFindings": [
+    {
+      "Id": "CVE-2024-21907",
+      "Name": "Improper Handling of Exceptional Conditions in Newtonsoft.Json",
+      "Category": "CVE",
+      "Severity": "mandatory",
+      "StoryPoint": 1,
+      "Description": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Newtonsoft.Json versions before 13.0.1 can process deeply nested JSON in a way that causes excessive resource consumption or stack overflow, resulting in denial of service.\n\nSeverity: HIGH\n\nAffected dependencies:\n  - Newtonsoft.Json 10.0.3 (NYCJobsWeb/packages.config:17)\n  - Newtonsoft.Json 9.0.1 (DataLoader/DataLoader/packages.config:3)\n\nRecommended fix: Upgrade both package references to 13.0.1 or later, or configure an appropriate maximum JSON depth.",
+      "Files": [
+        "NYCJobsWeb/packages.config:17",
+        "DataLoader/DataLoader/packages.config:3"
+      ],
+      "Explanation": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Newtonsoft.Json versions before 13.0.1 can process deeply nested JSON in a way that causes excessive resource consumption or stack overflow, resulting in denial of service.\n\nSeverity: HIGH\n\nAffected dependencies:\n  - Newtonsoft.Json 10.0.3 (NYCJobsWeb/packages.config:17)\n  - Newtonsoft.Json 9.0.1 (DataLoader/DataLoader/packages.config:3)\n\nRecommended fix: Upgrade both package references to 13.0.1 or later, or configure an appropriate maximum JSON depth."
+    },
+    {
+      "Id": "CVE-2021-26701",
+      "Name": ".NET Core Remote Code Execution Vulnerability",
+      "Category": "CVE",
+      "Severity": "mandatory",
+      "StoryPoint": 1,
+      "Description": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): System.Text.Encodings.Web versions 4.6.0 through 4.7.1 are affected by a remote code execution vulnerability related to text encoding.\n\nSeverity: CRITICAL\n\nAffected dependency:\n  - System.Text.Encodings.Web 4.6.0 (NYCJobsWeb/packages.config:23)\n\nRecommended fix: Upgrade to 4.7.2 or later (or the patched version appropriate for the target framework).",
+      "Files": [
+        "NYCJobsWeb/packages.config:23"
+      ],
+      "Explanation": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): System.Text.Encodings.Web versions 4.6.0 through 4.7.1 are affected by a remote code execution vulnerability related to text encoding.\n\nSeverity: CRITICAL\n\nAffected dependency:\n  - System.Text.Encodings.Web 4.6.0 (NYCJobsWeb/packages.config:23)\n\nRecommended fix: Upgrade to 4.7.2 or later (or the patched version appropriate for the target framework)."
+    }
+  ],
+  "CweFindings": [
+    {
+      "Id": "CWE-835",
+      "Name": "Loop with Unreachable Exit Condition ('Infinite Loop')",
+      "Category": "Code Quality",
+      "Severity": "potential",
+      "StoryPoint": 3,
+      "Description": "The product contains an iteration or loop with an exit condition that cannot be reached, i.e., an infinite loop.",
+      "Files": [
+        "NYCJobsWeb/Views/Home/Index.cshtml"
+      ],
+      "Explanation": "In UpdateMap, the while loop at line 193 repeats while map.entities.getLength() is greater than zero. The only attempted exit is map.entities.clear() inside a try; if clear throws, the empty catch at lines 195-198 suppresses the exception and the loop condition remains true, so the browser thread can hang."
+    },
+    {
+      "Id": "CWE-798",
+      "Name": "Use of Hard-coded Credentials",
+      "Category": "Credentials & Secrets",
+      "Severity": "optional",
+      "StoryPoint": 5,
+      "Description": "The product contains hard-coded credentials, such as a password or cryptographic key.",
+      "Files": [
+        "NYCJobsWeb/Views/Home/Index.cshtml"
+      ],
+      "Explanation": "The page embeds a non-empty mapping-service API credential directly in the client-side map initialization at line 114. It is shipped to every browser as application source. The credential value is intentionally omitted from this report."
+    },
+    {
+      "Id": "CWE-79",
+      "Name": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+      "Category": "Injection Attacks",
+      "Severity": "optional",
+      "StoryPoint": 8,
+      "Description": "The product does not neutralize or incorrectly neutralizes user-controllable input before it is placed in output that is used as a web page that is served to other users.",
+      "Files": [
+        "NYCJobsWeb/Views/Home/Index.cshtml"
+      ],
+      "Explanation": "UpdateBusinessTitleFacets and UpdatePostingTypeFacets concatenate Azure Search facet values directly into HTML and pass the result to jQuery .html() (lines 313-335). UpdateJobDetails also inserts indexed business_title and work_location values into HTML at lines 397-398 without output encoding, allowing stored script markup from indexed content to execute in visitors\u2019 browsers."
+    }
+  ]
+}
