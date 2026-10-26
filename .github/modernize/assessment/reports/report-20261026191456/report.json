@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "id": "20261026191456",
+    "generated_at": "2026-10-26T19:14:56.220023Z",
+    "note": "Security-only report (AppCAT was not run or failed)"
+  },
+  "security": [
+    {
+      "id": "CVE-2024-21907",
+      "title": "Improper Handling of Exceptional Conditions in Newtonsoft.Json",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Newtonsoft.Json may consume excessive CPU and memory or trigger a stack overflow when processing deeply nested JSON, causing denial of service.\n\nSeverity: HIGH\n\nAffected dependencies:\n  - Newtonsoft.Json 10.0.3 (declared at NYCJobsWeb/packages.config:17)\n  - Newtonsoft.Json 9.0.1 (declared at DataLoader/DataLoader/packages.config:3)\n\nRecommended fix:\n  - Upgrade Newtonsoft.Json to 13.0.1 or later.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:17",
+          "DataLoader/DataLoader/packages.config:3"
+        ],
+        "explanation": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Newtonsoft.Json may consume excessive CPU and memory or trigger a stack overflow when processing deeply nested JSON, causing denial of service.\n\nSeverity: HIGH\n\nAffected dependencies:\n  - Newtonsoft.Json 10.0.3 (declared at NYCJobsWeb/packages.config:17)\n  - Newtonsoft.Json 9.0.1 (declared at DataLoader/DataLoader/packages.config:3)\n\nRecommended fix:\n  - Upgrade Newtonsoft.Json to 13.0.1 or later."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2021-26701",
+      "title": ".NET Core Remote Code Execution Vulnerability in System.Text.Encodings.Web",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): System.Text.Encodings.Web versions 4.6.0 through 4.7.1 are affected by a remote code execution vulnerability related to text encoding.\n\nSeverity: CRITICAL\n\nAffected dependencies:\n  - System.Text.Encodings.Web 4.6.0 (declared at NYCJobsWeb/packages.config:23)\n\nRecommended fix:\n  - Upgrade to 4.7.2 or later.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:23"
+        ],
+        "explanation": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): System.Text.Encodings.Web versions 4.6.0 through 4.7.1 are affected by a remote code execution vulnerability related to text encoding.\n\nSeverity: CRITICAL\n\nAffected dependencies:\n  - System.Text.Encodings.Web 4.6.0 (declared at NYCJobsWeb/packages.config:23)\n\nRecommended fix:\n  - Upgrade to 4.7.2 or later."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CWE-772",
+      "title": "Missing Release of Resource after Effective Lifetime",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product does not release a resource after its effective lifetime has ended, i.e., after the resource is no longer needed.",
+      "evidence": {
+        "files": [
+          "DataLoader/DataLoader/AzureSearchHelper.cs:52-65"
+        ],
+        "explanation": "SendSearchRequest returns an HttpResponseMessage, and DataLoader/Program.cs stores and uses returned responses at lines 59, 82, and 102 without disposing them. The response resources can remain unreleased after their use, causing connection/resource exhaustion during repeated imports."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-835",
+      "title": "Loop with Unreachable Exit Condition ('Infinite Loop')",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product contains an iteration or loop with an exit condition that cannot be reached, i.e., an infinite loop.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/Index.cshtml:193-199"
+        ],
+        "explanation": "UpdateMap loops while map.entities.getLength() is greater than zero. If map.entities.clear() throws, the empty catch suppresses the failure and the entity count remains unchanged, so the loop has no reachable exit and can hang the browser thread."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-798",
+      "title": "Use of Hard-coded Credentials",
+      "category": "Credentials & Secrets",
+      "severity": "optional",
+      "description": "The product contains hard-coded credentials, such as a password or cryptographic key.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/Index.cshtml:114"
+        ],
+        "explanation": "The client-side map initialization embeds a Bing Maps API credential directly in the web page source. The value is exposed to every visitor and is used by the application for outbound service access; the credential value is intentionally omitted from this report."
+      },
+      "storyPoint": 5
+    },
+    {
+      "id": "CWE-79",
+      "title": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+      "category": "Injection Attacks",
+      "severity": "optional",
+      "description": "The product does not neutralize or incorrectly neutralizes user-controllable input before it is placed in output that is used as a web page that is served to other users.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml:49-52"
+        ],
+        "explanation": "UpdateJobDetails inserts job fields returned by the Azure Search API, including job_id, work_location, business_title, and civil_service_title, directly into the DOM using jQuery .html(). These stored/search-index values are not HTML-encoded before insertion, so HTML or script markup in a field can execute in a user's browser when job details are displayed."
+      },
+      "storyPoint": 8
+    }
+  ]
+}
