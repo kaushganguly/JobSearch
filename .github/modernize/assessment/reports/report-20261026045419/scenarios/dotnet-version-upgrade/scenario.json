@@ -1,0 +1,13 @@
+{
+  "status": "failed",
+  "error": "Microsoft.WebApplication.targets was not found while loading NYCJobsWeb.sln.",
+  "scenarioId": "dotnet-version-upgrade",
+  "operationId": "79edfd34-4ac1-41ba-a1f6-7e4e4ef3f3c5",
+  "description": "Upgrade .NET projects to newer .NET versions, including guidance on current release status, support lifecycle (LTS/STS), and recommended upgrade targets.",
+  "startTime": "2026-10-26T04:54:29.0181584Z",
+  "lastUpdateTime": "2026-10-26T04:54:32.0292974Z",
+  "properties": {
+    "UpgradeTargetFramework": "net10.0"
+  },
+  "folderPath": ""
+}

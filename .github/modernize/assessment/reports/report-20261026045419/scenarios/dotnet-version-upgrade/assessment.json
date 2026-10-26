@@ -1,0 +1,37 @@
+{
+  "status": "incomplete",
+  "limitations": [
+    "The assessment failed to load NYCJobsWeb.sln because Microsoft.WebApplication.targets was not found in the Linux .NET SDK. Zero projects were analyzed; zero issues does not mean compatible.",
+    "DataLoader/DataLoader.sln was not assessed after the tool failure. Re-run both solutions on Windows with Visual Studio web build tools and .NET Framework targeting packs."
+  ],
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": false
+    },
+    "targetId": "net10.0",
+    "targetDisplayName": ".NETCoreApp,Version=v10.0"
+  },
+  "analysisStartTime": "2026-10-26T04:54:32.0538423Z",
+  "analysisEndTime": "2026-10-26T04:54:32.0538573Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 0,
+      "issues": 0,
+      "incidents": 0,
+      "effort": 0
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 0,
+        "Optional": 0,
+        "Potential": 0,
+        "Information": 0
+      },
+      "category": {}
+    }
+  },
+  "projects": [],
+  "rules": {}
+}

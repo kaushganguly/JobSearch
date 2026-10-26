@@ -1,0 +1,209 @@
+{
+  "metadata": {
+    "analysisStartTime": "2026-10-26T04:54:19.573005+00:00",
+    "assessmentTool": "dotnet-appcat",
+    "assessmentToolVersion": "1.0.1127",
+    "status": "incomplete",
+    "privacyMode": "Restricted",
+    "upgradeAssessment": {
+      "targetFramework": "net10.0",
+      "status": "incomplete",
+      "analyzedProjects": 0,
+      "reason": "Microsoft.WebApplication.targets was not found when loading NYCJobsWeb.sln. DataLoader/DataLoader.sln was not assessed after this failure."
+    },
+    "limitations": [
+      "Core assessment failed before analysis: Msbuild was not found; Microsoft.WebApplication.targets is unavailable in the Linux .NET SDK. No cloud-readiness conclusions can be drawn. Re-run on Windows with Visual Studio web build tools and .NET Framework targeting packs."
+    ]
+  },
+  "rules": {},
+  "projects": [
+    {
+      "name": "NYCJobsWeb",
+      "path": "NYCJobsWeb/NYCJobsWeb.csproj",
+      "properties": {
+        "repo": "JobSearch",
+        "appName": "NYCJobsWeb",
+        "languages": [
+          "C#"
+        ],
+        "frameworks": [
+          ".NET Framework"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "description": "Core assessment failed before analysis: Msbuild was not found; Microsoft.WebApplication.targets is unavailable in the Linux .NET SDK. No cloud-readiness conclusions can be drawn. Re-run on Windows with Visual Studio web build tools and .NET Framework targeting packs."
+      },
+      "incidents": []
+    },
+    {
+      "name": "DataLoader",
+      "path": "DataLoader/DataLoader/DataLoader.csproj",
+      "properties": {
+        "repo": "JobSearch",
+        "appName": "DataLoader",
+        "languages": [
+          "C#"
+        ],
+        "frameworks": [
+          ".NET Framework"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "description": "Core assessment failed before analysis: Msbuild was not found; Microsoft.WebApplication.targets is unavailable in the Linux .NET SDK. No cloud-readiness conclusions can be drawn. Re-run on Windows with Visual Studio web build tools and .NET Framework targeting packs."
+      },
+      "incidents": []
+    }
+  ],
+  "security": [
+    {
+      "id": "CVE-2024-21907",
+      "title": "Improper Handling of Exceptional Conditions in Newtonsoft.Json",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Improper Handling of Exceptional Conditions in Newtonsoft.Json\n\nSeverity: HIGH\n\nAffected dependencies:\n- Newtonsoft.Json:10.0.3 (NYCJobsWeb/packages.config:17); vulnerable range < 13.0.1; first patched version 13.0.1.\n- Newtonsoft.Json:9.0.1 (DataLoader/DataLoader/packages.config:3); vulnerable range < 13.0.1; first patched version 13.0.1.\n\nRecommended fix: upgrade each affected package to a supported release at or above the corresponding first patched version; validate compatibility. Manifest match confirms a vulnerable dependency, not exploitability of application call sites.",
+      "evidence": {
+        "files": [
+          "DataLoader/DataLoader/packages.config:3",
+          "NYCJobsWeb/packages.config:17"
+        ],
+        "explanation": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Improper Handling of Exceptional Conditions in Newtonsoft.Json\n\nSeverity: HIGH\n\nAffected dependencies:\n- Newtonsoft.Json:10.0.3 (NYCJobsWeb/packages.config:17); vulnerable range < 13.0.1; first patched version 13.0.1.\n- Newtonsoft.Json:9.0.1 (DataLoader/DataLoader/packages.config:3); vulnerable range < 13.0.1; first patched version 13.0.1.\n\nRecommended fix: upgrade each affected package to a supported release at or above the corresponding first patched version; validate compatibility. Manifest match confirms a vulnerable dependency, not exploitability of application call sites."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2022-26907",
+      "title": "Azure SDK for .NET Information Disclosure Vulnerability.",
+      "category": "CVE",
+      "severity": "optional",
+      "description": "[CVE-2022-26907](https://github.com/advisories/GHSA-whph-446h-6m9v): Azure SDK for .NET Information Disclosure Vulnerability.\n\nSeverity: MEDIUM\n\nAffected dependencies:\n- Microsoft.Rest.ClientRuntime:2.3.20 (NYCJobsWeb/packages.config:12); vulnerable range < 2.3.24; first patched version 2.3.24.\n\nRecommended fix: upgrade each affected package to a supported release at or above the corresponding first patched version; validate compatibility. Manifest match confirms a vulnerable dependency, not exploitability of application call sites.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:12"
+        ],
+        "explanation": "[CVE-2022-26907](https://github.com/advisories/GHSA-whph-446h-6m9v): Azure SDK for .NET Information Disclosure Vulnerability.\n\nSeverity: MEDIUM\n\nAffected dependencies:\n- Microsoft.Rest.ClientRuntime:2.3.20 (NYCJobsWeb/packages.config:12); vulnerable range < 2.3.24; first patched version 2.3.24.\n\nRecommended fix: upgrade each affected package to a supported release at or above the corresponding first patched version; validate compatibility. Manifest match confirms a vulnerable dependency, not exploitability of application call sites."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2021-26701",
+      "title": ".NET Core Remote Code Execution Vulnerability",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): .NET Core Remote Code Execution Vulnerability\n\nSeverity: CRITICAL\n\nAffected dependencies:\n- System.Text.Encodings.Web:4.6.0 (NYCJobsWeb/packages.config:23); vulnerable range >= 4.6.0, < 4.7.2; first patched version 4.7.2.\n\nRecommended fix: upgrade each affected package to a supported release at or above the corresponding first patched version; validate compatibility. Manifest match confirms a vulnerable dependency, not exploitability of application call sites.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:23"
+        ],
+        "explanation": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): .NET Core Remote Code Execution Vulnerability\n\nSeverity: CRITICAL\n\nAffected dependencies:\n- System.Text.Encodings.Web:4.6.0 (NYCJobsWeb/packages.config:23); vulnerable range >= 4.6.0, < 4.7.2; first patched version 4.7.2.\n\nRecommended fix: upgrade each affected package to a supported release at or above the corresponding first patched version; validate compatibility. Manifest match confirms a vulnerable dependency, not exploitability of application call sites."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2020-11023",
+      "title": "Potential XSS vulnerability in jQuery",
+      "category": "CVE",
+      "severity": "optional",
+      "description": "[CVE-2020-11023](https://github.com/advisories/GHSA-jpcq-cgw6-v4j6): Potential XSS vulnerability in jQuery\n\nSeverity: MEDIUM\n\nAffected dependencies:\n- jQuery:3.1.1 (NYCJobsWeb/packages.config:7); vulnerable range >= 1.0.3, < 3.5.0; first patched version 3.5.0.\n\nRecommended fix: upgrade each affected package to a supported release at or above the corresponding first patched version; validate compatibility. Manifest match confirms a vulnerable dependency, not exploitability of application call sites.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:7"
+        ],
+        "explanation": "[CVE-2020-11023](https://github.com/advisories/GHSA-jpcq-cgw6-v4j6): Potential XSS vulnerability in jQuery\n\nSeverity: MEDIUM\n\nAffected dependencies:\n- jQuery:3.1.1 (NYCJobsWeb/packages.config:7); vulnerable range >= 1.0.3, < 3.5.0; first patched version 3.5.0.\n\nRecommended fix: upgrade each affected package to a supported release at or above the corresponding first patched version; validate compatibility. Manifest match confirms a vulnerable dependency, not exploitability of application call sites."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2019-11358",
+      "title": "XSS in jQuery as used in Drupal, Backdrop CMS, and other products",
+      "category": "CVE",
+      "severity": "optional",
+      "description": "[CVE-2019-11358](https://github.com/advisories/GHSA-6c3j-c64m-qhgq): XSS in jQuery as used in Drupal, Backdrop CMS, and other products\n\nSeverity: MEDIUM\n\nAffected dependencies:\n- jQuery:3.1.1 (NYCJobsWeb/packages.config:7); vulnerable range >= 1.1.4, < 3.4.0; first patched version 3.4.0.\n\nRecommended fix: upgrade each affected package to a supported release at or above the corresponding first patched version; validate compatibility. Manifest match confirms a vulnerable dependency, not exploitability of application call sites.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:7"
+        ],
+        "explanation": "[CVE-2019-11358](https://github.com/advisories/GHSA-6c3j-c64m-qhgq): XSS in jQuery as used in Drupal, Backdrop CMS, and other products\n\nSeverity: MEDIUM\n\nAffected dependencies:\n- jQuery:3.1.1 (NYCJobsWeb/packages.config:7); vulnerable range >= 1.1.4, < 3.4.0; first patched version 3.4.0.\n\nRecommended fix: upgrade each affected package to a supported release at or above the corresponding first patched version; validate compatibility. Manifest match confirms a vulnerable dependency, not exploitability of application call sites."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CWE-571",
+      "title": "Expression is Always True",
+      "category": "Code Quality",
+      "severity": "optional",
+      "description": "The product contains an expression that will always evaluate to true.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml:9-15"
+        ],
+        "explanation": "LookUp splits the query string with query.split(\"&\") at line 11 and checks vars.length > 0 at line 12. JavaScript split always returns at least one item here, including for an empty string, so the condition is always true and an empty/missing query still sends a lookup request. Confirmed control-flow defect; no independent privilege escalation or server compromise demonstrated."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CWE-665",
+      "title": "Improper Initialization",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product does not initialize or incorrectly initializes a resource, which might leave the resource in an unexpected state when it is accessed or used.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/JobsSearch.cs:24-39",
+          "NYCJobsWeb/JobsSearch.cs:109-115",
+          "NYCJobsWeb/Controllers/HomeController.cs:52-60"
+        ],
+        "explanation": "JobsSearch static constructor catches credential/endpoint/client initialization exceptions and only stores e.Message at lines 36-38. Type initialization therefore completes with one or both static search clients unset. Search later dereferences the client, catches the failure and returns null; HomeController.Search dereferences that result. Invalid/missing configuration can leave the service permanently partially initialized for the process lifetime and produce request failures. Configuration-dependent availability defect, not a demonstrated remote configuration-write exploit."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-772",
+      "title": "Missing Release of Resource after Effective Lifetime",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product does not release a resource after its effective lifetime has ended, i.e., after the resource is no longer needed.",
+      "evidence": {
+        "files": [
+          "DataLoader/DataLoader/AzureSearchHelper.cs:58-65",
+          "DataLoader/DataLoader/Program.cs:58-60",
+          "DataLoader/DataLoader/Program.cs:97-104"
+        ],
+        "explanation": "AzureSearchHelper.SendSearchRequest creates HttpRequestMessage and optional StringContent without disposal and returns an HttpResponseMessage. Loader callers only inspect status and never dispose the response; ImportFromJSON repeats this per data file. Request/response resources remain undisposed beyond each request lifetime. Finite local import workload; socket/handle exhaustion was not dynamically established, and this is not asserted as a separately verified file-descriptor leak."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-798",
+      "title": "Use of Hard-coded Credentials",
+      "category": "Credentials & Secrets",
+      "severity": "optional",
+      "description": "The product contains hard-coded credentials, such as a password or cryptographic key.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/Index.cshtml:112-115"
+        ],
+        "explanation": "Home view GetMap passes a non-placeholder, hard-coded Bing Maps credential to the browser map constructor at line 114. The credential is persisted in source and delivered to every page visitor. Value intentionally redacted and never tested. Browser map keys may be intentionally public; validity, domain/referrer restrictions, allowed APIs, billing exposure and administrative capability are unknown. This is a confirmed embedded API credential pattern, not evidence that a privileged server secret is active. Search service configuration values are placeholders or empty and are not reported as real credentials."
+      },
+      "storyPoint": 5
+    },
+    {
+      "id": "CWE-79",
+      "title": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+      "category": "Injection Attacks",
+      "severity": "optional",
+      "description": "The product does not neutralize or incorrectly neutralizes user-controllable input before it is placed in output that is used as a web page that is served to other users.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml:24-40",
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml:49-73",
+          "NYCJobsWeb/Controllers/HomeController.cs:86-96",
+          "DataLoader/DataLoader/Program.cs:97-103"
+        ],
+        "explanation": "Stored/DOM XSS sink: HomeController.LookUp returns search-index fields as JSON; JobDetails.UpdateJobDetails inserts work_location, business_title and other fields directly through jQuery .html() at lines 49-73. CleanText only replaces formatting sequences (24-40), not HTML or event attributes. An attacker able to influence imported/indexed job content can introduce active markup rendered for visitors. No anonymous index-write route was found; exploitation requires control of upstream data or index write access, not merely an id query parameter. Static source confirmation; no live payload executed."
+      },
+      "storyPoint": 8
+    }
+  ]
+}
