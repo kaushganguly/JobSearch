@@ -1,0 +1,168 @@
+{
+  "metadata": {
+    "analysisStartTime": "2026-10-26T05:03:54.408666+00:00",
+    "assessmentTool": "dotnet-appcat",
+    "assessmentToolVersion": "1.0.1127",
+    "status": "incomplete",
+    "limitations": [
+      "Core assessment failed: MSBuild was not found and Microsoft.WebApplication.targets is unavailable on Linux. AppCAT 1.0.1127 produced no report. Cloud readiness findings are unavailable, not zero.",
+      ".NET 10 upgrade assessment failed: imported Microsoft.WebApplication.targets was not found. Service generated all five expected artifact files, but assessment.json contains zero analyzed projects; these are incomplete placeholders, not a compatibility clearance. Only NYCJobsWeb.sln was submitted; the standalone DataLoader solution was not assessed by the upgrade service."
+    ],
+    "targetIds": [
+      "Any"
+    ],
+    "targetDisplayNames": [
+      "Any"
+    ],
+    "dotnetUpgrade": {
+      "status": "failed",
+      "targetFramework": "net10.0",
+      "solution": "/home/runner/work/JobSearch/JobSearch/NYCJobsWeb.sln"
+    }
+  },
+  "rules": {},
+  "projects": [
+    {
+      "name": "JobSearch (metadata inventory only; core analysis failed)",
+      "properties": {
+        "appName": "JobSearch",
+        "repo": "kaushganguly/JobSearch",
+        "frameworks": [
+          ".NET Framework 4.7.2",
+          ".NET Framework 4.5",
+          "ASP.NET MVC 5"
+        ],
+        "description": "Core assessment failed: MSBuild was not found and Microsoft.WebApplication.targets is unavailable on Linux. AppCAT 1.0.1127 produced no report. Cloud readiness findings are unavailable, not zero. .NET 10 upgrade analysis also failed at project loading; zero generated upgrade counts are not a compatibility clearance. Security results are a separate static assessment with dependency inventory limitations.",
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild",
+          "NuGet packages.config"
+        ]
+      },
+      "incidents": [],
+      "assessmentStatus": "failed"
+    }
+  ],
+  "security": [
+    {
+      "id": "CVE-2024-21907",
+      "title": "Improper Handling of Exceptional Conditions in Newtonsoft.Json",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Improper Handling of Exceptional Conditions in Newtonsoft.Json\n\nSeverity: HIGH\n\nDeclared affected packages:\n- Newtonsoft.Json 10.0.3; affected range < 13.0.1; first patched version 13.0.1\n- Newtonsoft.Json 9.0.1; affected range < 13.0.1; first patched version 13.0.1\n\nPackage-level advisory match, not proof of reachable exploitation. Upgrade to a supported patched release after compatibility testing. Dependency CLI failed; packages.config inventory used; unresolved transitive coverage remains.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:17",
+          "DataLoader/DataLoader/packages.config:3"
+        ],
+        "explanation": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Improper Handling of Exceptional Conditions in Newtonsoft.Json\n\nSeverity: HIGH\n\nDeclared affected packages:\n- Newtonsoft.Json 10.0.3; affected range < 13.0.1; first patched version 13.0.1\n- Newtonsoft.Json 9.0.1; affected range < 13.0.1; first patched version 13.0.1\n\nPackage-level advisory match, not proof of reachable exploitation. Upgrade to a supported patched release after compatibility testing. Dependency CLI failed; packages.config inventory used; unresolved transitive coverage remains."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2022-26907",
+      "title": "Azure SDK for .NET Information Disclosure Vulnerability.",
+      "category": "CVE",
+      "severity": "optional",
+      "description": "[CVE-2022-26907](https://github.com/advisories/GHSA-whph-446h-6m9v): Azure SDK for .NET Information Disclosure Vulnerability.\n\nSeverity: MEDIUM\n\nDeclared affected packages:\n- Microsoft.Rest.ClientRuntime 2.3.20; affected range < 2.3.24; first patched version 2.3.24\n\nPackage-level advisory match, not proof of reachable exploitation. Upgrade to a supported patched release after compatibility testing. Dependency CLI failed; packages.config inventory used; unresolved transitive coverage remains.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:12"
+        ],
+        "explanation": "[CVE-2022-26907](https://github.com/advisories/GHSA-whph-446h-6m9v): Azure SDK for .NET Information Disclosure Vulnerability.\n\nSeverity: MEDIUM\n\nDeclared affected packages:\n- Microsoft.Rest.ClientRuntime 2.3.20; affected range < 2.3.24; first patched version 2.3.24\n\nPackage-level advisory match, not proof of reachable exploitation. Upgrade to a supported patched release after compatibility testing. Dependency CLI failed; packages.config inventory used; unresolved transitive coverage remains."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2021-26701",
+      "title": ".NET Core Remote Code Execution Vulnerability",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): .NET Core Remote Code Execution Vulnerability\n\nSeverity: CRITICAL\n\nDeclared affected packages:\n- System.Text.Encodings.Web 4.6.0; affected range >= 4.6.0, < 4.7.2; first patched version 4.7.2\n\nPackage-level advisory match, not proof of reachable exploitation. Upgrade to a supported patched release after compatibility testing. Dependency CLI failed; packages.config inventory used; unresolved transitive coverage remains.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:23"
+        ],
+        "explanation": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): .NET Core Remote Code Execution Vulnerability\n\nSeverity: CRITICAL\n\nDeclared affected packages:\n- System.Text.Encodings.Web 4.6.0; affected range >= 4.6.0, < 4.7.2; first patched version 4.7.2\n\nPackage-level advisory match, not proof of reachable exploitation. Upgrade to a supported patched release after compatibility testing. Dependency CLI failed; packages.config inventory used; unresolved transitive coverage remains."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2020-11023",
+      "title": "Potential XSS vulnerability in jQuery",
+      "category": "CVE",
+      "severity": "optional",
+      "description": "[CVE-2020-11023](https://github.com/advisories/GHSA-jpcq-cgw6-v4j6): Potential XSS vulnerability in jQuery\n\nSeverity: MEDIUM\n\nDeclared affected packages:\n- jQuery 3.1.1; affected range >= 1.0.3, < 3.5.0; first patched version 3.5.0\n\nPackage-level advisory match, not proof of reachable exploitation. Upgrade to a supported patched release after compatibility testing. Dependency CLI failed; packages.config inventory used; unresolved transitive coverage remains.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:7"
+        ],
+        "explanation": "[CVE-2020-11023](https://github.com/advisories/GHSA-jpcq-cgw6-v4j6): Potential XSS vulnerability in jQuery\n\nSeverity: MEDIUM\n\nDeclared affected packages:\n- jQuery 3.1.1; affected range >= 1.0.3, < 3.5.0; first patched version 3.5.0\n\nPackage-level advisory match, not proof of reachable exploitation. Upgrade to a supported patched release after compatibility testing. Dependency CLI failed; packages.config inventory used; unresolved transitive coverage remains."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2019-11358",
+      "title": "XSS in jQuery as used in Drupal, Backdrop CMS, and other products",
+      "category": "CVE",
+      "severity": "optional",
+      "description": "[CVE-2019-11358](https://github.com/advisories/GHSA-6c3j-c64m-qhgq): XSS in jQuery as used in Drupal, Backdrop CMS, and other products\n\nSeverity: MEDIUM\n\nDeclared affected packages:\n- jQuery 3.1.1; affected range >= 1.1.4, < 3.4.0; first patched version 3.4.0\n\nPackage-level advisory match, not proof of reachable exploitation. Upgrade to a supported patched release after compatibility testing. Dependency CLI failed; packages.config inventory used; unresolved transitive coverage remains.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:7"
+        ],
+        "explanation": "[CVE-2019-11358](https://github.com/advisories/GHSA-6c3j-c64m-qhgq): XSS in jQuery as used in Drupal, Backdrop CMS, and other products\n\nSeverity: MEDIUM\n\nDeclared affected packages:\n- jQuery 3.1.1; affected range >= 1.1.4, < 3.4.0; first patched version 3.4.0\n\nPackage-level advisory match, not proof of reachable exploitation. Upgrade to a supported patched release after compatibility testing. Dependency CLI failed; packages.config inventory used; unresolved transitive coverage remains."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CWE-665",
+      "title": "Improper Initialization",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product does not initialize or incorrectly initializes a resource, which might leave the resource in an unexpected state when it is accessed or used.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/JobsSearch.cs:17",
+          "NYCJobsWeb/JobsSearch.cs:19",
+          "NYCJobsWeb/JobsSearch.cs:32-38"
+        ],
+        "explanation": "Static client reference fields initially default to null. Client-construction exceptions are caught and only recorded, allowing static initialization to complete with one or both clients unset. Prerequisite: Invalid configuration or another exception during client construction. Impact: Subsequent client dereferences can fail. This is a reliability pattern, not demonstrated attacker exploitation."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-772",
+      "title": "Missing Release of Resource after Effective Lifetime",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product does not release a resource after its effective lifetime has ended, i.e., after the resource is no longer needed.",
+      "evidence": {
+        "files": [
+          "DataLoader/DataLoader/AzureSearchHelper.cs:58-65",
+          "DataLoader/DataLoader/Program.cs:59-60"
+        ],
+        "explanation": "First example: HttpRequestMessage is allocated, optionally receives StringContent, and is passed to SendAsync without disposal. The first caller receives HttpResponseMessage and checks success without disposing it. Neither resource has deterministic cleanup for this operation. Prerequisite: Execution of the loader HTTP operation. Impact: Missing deterministic HTTP-resource cleanup. Actual resource exhaustion or security exploitation was not established."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-79",
+      "title": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+      "category": "Injection Attacks",
+      "severity": "optional",
+      "description": "The product does not neutralize or incorrectly neutralizes user-controllable input before it is placed in output that is used as a web page that is served to other users.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/Index.cshtml:313",
+          "NYCJobsWeb/Views/Home/Index.cshtml:397",
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml:49"
+        ],
+        "explanation": "Unsafe rendering pattern: search-index fields from HomeController.Search (HomeController.cs:52-60) and detail responses (86-96) enter HTML and generated inline event handlers without contextual encoding at Index.cshtml:313-334,397-416 and JobDetails.cshtml:49-80. Conditional stored XSS requires an attacker to influence indexed/imported data; no attacker-accessible index-write endpoint was identified. This reports the unsafe sink pattern, not a demonstrated remote exploit. Deployed configuration and index provenance were not verified."
+      },
+      "storyPoint": 8
+    }
+  ]
+}
