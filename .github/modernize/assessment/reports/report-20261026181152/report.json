@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "id": "20261026181152",
+    "generated_at": "2026-10-26T18:11:52.014558Z",
+    "note": "Security-only report (AppCAT was not run or failed)"
+  },
+  "security": [
+    {
+      "Id": "CVE-2024-21907",
+      "Name": "Improper Handling of Exceptional Conditions in Newtonsoft.Json",
+      "Category": "CVE",
+      "Severity": "mandatory",
+      "StoryPoint": 1,
+      "Description": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Newtonsoft.Json versions before 13.0.1 can consume excessive CPU and memory or cause a stack overflow when processing deeply nested JSON.\n\nSeverity: HIGH\n\nAffected dependencies:\n  - Newtonsoft.Json 10.0.3 (NYCJobsWeb/packages.config:17)\n  - Newtonsoft.Json 9.0.1 (DataLoader/DataLoader/packages.config:3)\n\nRecommended fix:\n  - Upgrade Newtonsoft.Json to 13.0.1 or later.",
+      "Files": [
+        "NYCJobsWeb/packages.config:17",
+        "DataLoader/DataLoader/packages.config:3"
+      ],
+      "Explanation": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Newtonsoft.Json versions before 13.0.1 can consume excessive CPU and memory or cause a stack overflow when processing deeply nested JSON.\n\nSeverity: HIGH\n\nAffected dependencies:\n  - Newtonsoft.Json 10.0.3 (NYCJobsWeb/packages.config:17)\n  - Newtonsoft.Json 9.0.1 (DataLoader/DataLoader/packages.config:3)\n\nRecommended fix:\n  - Upgrade Newtonsoft.Json to 13.0.1 or later."
+    },
+    {
+      "Id": "CVE-2021-26701",
+      "Name": ".NET Core Remote Code Execution Vulnerability in System.Text.Encodings.Web",
+      "Category": "CVE",
+      "Severity": "mandatory",
+      "StoryPoint": 1,
+      "Description": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): System.Text.Encodings.Web versions 4.6.0 through 4.7.1 are affected by a remote code execution vulnerability involving text encoding.\n\nSeverity: CRITICAL\n\nAffected dependencies:\n  - System.Text.Encodings.Web 4.6.0 (NYCJobsWeb/packages.config:23)\n\nRecommended fix:\n  - Upgrade to version 4.7.2 or later compatible with the application's target framework.",
+      "Files": [
+        "NYCJobsWeb/packages.config:23"
+      ],
+      "Explanation": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): System.Text.Encodings.Web versions 4.6.0 through 4.7.1 are affected by a remote code execution vulnerability involving text encoding.\n\nSeverity: CRITICAL\n\nAffected dependencies:\n  - System.Text.Encodings.Web 4.6.0 (NYCJobsWeb/packages.config:23)\n\nRecommended fix:\n  - Upgrade to version 4.7.2 or later compatible with the application's target framework."
+    },
+    {
+      "Id": "CWE-772",
+      "Name": "Missing Release of Resource after Effective Lifetime",
+      "Category": "Code Quality",
+      "Severity": "potential",
+      "StoryPoint": 3,
+      "Description": "The product does not release a resource after its effective lifetime has ended, i.e., after the resource is no longer needed.",
+      "Files": [
+        "DataLoader/DataLoader/AzureSearchHelper.cs:58-65",
+        "DataLoader/DataLoader/Program.cs:58-60",
+        "DataLoader/DataLoader/Program.cs:82-83",
+        "DataLoader/DataLoader/Program.cs:97-103"
+      ],
+      "Explanation": "AzureSearchHelper.SendSearchRequest creates an HttpRequestMessage and sends it without disposing the request. The callers in Program retain HttpResponseMessage instances without disposing them, including once per imported JSON file in ImportFromJSON (lines 97-103). Repeated imports can leave request/response resources undisposed until garbage collection or process termination."
+    },
+    {
+      "Id": "CWE-835",
+      "Name": "Loop with Unreachable Exit Condition ('Infinite Loop')",
+      "Category": "Code Quality",
+      "Severity": "potential",
+      "StoryPoint": 3,
+      "Description": "The product contains an iteration or loop with an exit condition that cannot be reached, i.e., an infinite loop.",
+      "Files": [
+        "NYCJobsWeb/Views/Home/JobDetails.cshtml:31-32"
+      ],
+      "Explanation": "CleanText loops while text.indexOf(/\\n/g) is positive, but the regex is coerced to the literal string `/\\n/g`; if job text contains that sequence, text.replace(/\\n/g, ...) only replaces actual newline characters and leaves the matched literal unchanged. The loop condition then remains true indefinitely, allowing crafted indexed content to hang the browser page."
+    },
+    {
+      "Id": "CWE-798",
+      "Name": "Use of Hard-coded Credentials",
+      "Category": "Credentials & Secrets",
+      "Severity": "optional",
+      "StoryPoint": 5,
+      "Description": "The product contains hard-coded credentials, such as a password or cryptographic key.",
+      "Files": [
+        "NYCJobsWeb/Views/Home/Index.cshtml:114"
+      ],
+      "Explanation": "The GetMap function embeds a map-service API credential directly in client-side JavaScript at line 114. As source code delivered to the browser, the credential is exposed to every visitor; its literal value is intentionally omitted from this assessment."
+    },
+    {
+      "Id": "CWE-79",
+      "Name": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+      "Category": "Injection Attacks",
+      "Severity": "optional",
+      "StoryPoint": 8,
+      "Description": "The product does not neutralize or incorrectly neutralizes user-controllable input before it is placed in output that is used as a web page that is served to other users.",
+      "Files": [
+        "NYCJobsWeb/Views/Home/Index.cshtml:397-416",
+        "NYCJobsWeb/Views/Home/Index.cshtml:316-319",
+        "NYCJobsWeb/Views/Home/JobDetails.cshtml:49-73"
+      ],
+      "Explanation": "UpdateJobDetails in Index.cshtml concatenates Azure Cognitive Search document fields such as business_title, work_location, and job_description into HTML and passes the result to jQuery .html() (lines 397-416). Facet values are similarly concatenated into HTML and inline onclick handlers (lines 316-319). JobDetails.cshtml also inserts document fields and job text through .html() (lines 49-73). If indexed job or facet content contains markup or script, it is interpreted as active page content for users viewing the results."
+    }
+  ]
+}
