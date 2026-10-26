@@ -1,0 +1,36 @@
+{
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": false
+    },
+    "targetId": "net10.0",
+    "targetDisplayName": ".NETCoreApp,Version=v10.0"
+  },
+  "analysisStartTime": "2026-10-26T05:04:07.8149849Z",
+  "analysisEndTime": "2026-10-26T05:04:07.8149948Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 0,
+      "issues": 0,
+      "incidents": 0,
+      "effort": 0
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 0,
+        "Optional": 0,
+        "Potential": 0,
+        "Information": 0
+      },
+      "category": {}
+    }
+  },
+  "projects": [],
+  "rules": {},
+  "status": "failed",
+  "limitations": [
+    "Project loading failed because Microsoft.WebApplication.targets is unavailable. Zero analyzed projects: no upgrade compatibility conclusions can be drawn."
+  ]
+}
