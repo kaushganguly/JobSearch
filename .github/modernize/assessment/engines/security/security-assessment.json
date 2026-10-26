@@ -1,0 +1,190 @@
+{
+  "GeneratedAt": "2026-10-26T05:22:52.923879Z",
+  "ProjectPath": ".",
+  "Summary": {
+    "TotalFindings": 13,
+    "CveCount": 5,
+    "CweCount": 8,
+    "BySeverity": {
+      "mandatory": 2,
+      "optional": 5,
+      "potential": 6
+    },
+    "ByCategory": {
+      "CVE": 5,
+      "Code Quality": 6,
+      "Credentials & Secrets": 1,
+      "Injection Attacks": 1
+    },
+    "TotalRulesAssessed": 59,
+    "RulesPassed": 51
+  },
+  "CveFindings": [
+    {
+      "Id": "CVE-2024-21907",
+      "Name": "Improper Handling of Exceptional Conditions in Newtonsoft.Json",
+      "Category": "CVE",
+      "Severity": "mandatory",
+      "StoryPoint": 1,
+      "Description": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Newtonsoft.Json versions before 13.0.1 can consume excessive CPU and memory or cause a stack overflow when processing deeply nested JSON. Severity: HIGH. Affected dependencies: Newtonsoft.Json 10.0.3 (`NYCJobsWeb/packages.config:17`) and 9.0.1 (`DataLoader/DataLoader/packages.config:3`). Recommended fix: upgrade both to 13.0.1 or later, or constrain JSON nesting with `MaxDepth`.",
+      "Files": [
+        "NYCJobsWeb/packages.config:17",
+        "DataLoader/DataLoader/packages.config:3"
+      ],
+      "Explanation": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Newtonsoft.Json versions before 13.0.1 can consume excessive CPU and memory or cause a stack overflow when processing deeply nested JSON. Severity: HIGH. Affected dependencies: Newtonsoft.Json 10.0.3 (`NYCJobsWeb/packages.config:17`) and 9.0.1 (`DataLoader/DataLoader/packages.config:3`). Recommended fix: upgrade both to 13.0.1 or later, or constrain JSON nesting with `MaxDepth`."
+    },
+    {
+      "Id": "CVE-2022-26907",
+      "Name": "Azure SDK for .NET Information Disclosure Vulnerability",
+      "Category": "CVE",
+      "Severity": "optional",
+      "StoryPoint": 1,
+      "Description": "[CVE-2022-26907](https://github.com/advisories/GHSA-whph-446h-6m9v): Microsoft.Rest.ClientRuntime versions before 2.3.24 are affected by an information disclosure vulnerability. Severity: MEDIUM. Affected dependency: Microsoft.Rest.ClientRuntime 2.3.20 (`NYCJobsWeb/packages.config:12`). Recommended fix: upgrade to 2.3.24 or later.",
+      "Files": [
+        "NYCJobsWeb/packages.config:12"
+      ],
+      "Explanation": "[CVE-2022-26907](https://github.com/advisories/GHSA-whph-446h-6m9v): Microsoft.Rest.ClientRuntime versions before 2.3.24 are affected by an information disclosure vulnerability. Severity: MEDIUM. Affected dependency: Microsoft.Rest.ClientRuntime 2.3.20 (`NYCJobsWeb/packages.config:12`). Recommended fix: upgrade to 2.3.24 or later."
+    },
+    {
+      "Id": "CVE-2021-26701",
+      "Name": ".NET Core Remote Code Execution Vulnerability",
+      "Category": "CVE",
+      "Severity": "mandatory",
+      "StoryPoint": 1,
+      "Description": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): System.Text.Encodings.Web 4.6.0 falls in the vulnerable range >=4.6.0 and <4.7.2. Severity: CRITICAL. Affected dependency: System.Text.Encodings.Web 4.6.0 (`NYCJobsWeb/packages.config:23`). Recommended fix: upgrade to 4.7.2 or later.",
+      "Files": [
+        "NYCJobsWeb/packages.config:23"
+      ],
+      "Explanation": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): System.Text.Encodings.Web 4.6.0 falls in the vulnerable range >=4.6.0 and <4.7.2. Severity: CRITICAL. Affected dependency: System.Text.Encodings.Web 4.6.0 (`NYCJobsWeb/packages.config:23`). Recommended fix: upgrade to 4.7.2 or later."
+    },
+    {
+      "Id": "CVE-2020-11023",
+      "Name": "Potential XSS vulnerability in jQuery",
+      "Category": "CVE",
+      "Severity": "optional",
+      "StoryPoint": 1,
+      "Description": "[CVE-2020-11023](https://github.com/advisories/GHSA-jpcq-cgw6-v4j6): jQuery versions from 1.0.3 up to (but not including) 3.5.0 have a potential XSS vulnerability. Severity: MEDIUM. Affected dependency: jQuery 3.1.1 (`NYCJobsWeb/packages.config:7`). Recommended fix: upgrade to 3.5.0 or later.",
+      "Files": [
+        "NYCJobsWeb/packages.config:7"
+      ],
+      "Explanation": "[CVE-2020-11023](https://github.com/advisories/GHSA-jpcq-cgw6-v4j6): jQuery versions from 1.0.3 up to (but not including) 3.5.0 have a potential XSS vulnerability. Severity: MEDIUM. Affected dependency: jQuery 3.1.1 (`NYCJobsWeb/packages.config:7`). Recommended fix: upgrade to 3.5.0 or later."
+    },
+    {
+      "Id": "CVE-2019-11358",
+      "Name": "XSS in jQuery as used in Drupal, Backdrop CMS, and other products",
+      "Category": "CVE",
+      "Severity": "optional",
+      "StoryPoint": 1,
+      "Description": "[CVE-2019-11358](https://github.com/advisories/GHSA-6c3j-c64m-qhgq): jQuery versions from 1.1.4 up to (but not including) 3.4.0 are affected by a prototype pollution vulnerability that can contribute to XSS. Severity: MEDIUM. Affected dependency: jQuery 3.1.1 (`NYCJobsWeb/packages.config:7`). Recommended fix: upgrade to 3.4.0 or later; 3.5.0 or later also addresses CVE-2020-11023.",
+      "Files": [
+        "NYCJobsWeb/packages.config:7"
+      ],
+      "Explanation": "[CVE-2019-11358](https://github.com/advisories/GHSA-6c3j-c64m-qhgq): jQuery versions from 1.1.4 up to (but not including) 3.4.0 are affected by a prototype pollution vulnerability that can contribute to XSS. Severity: MEDIUM. Affected dependency: jQuery 3.1.1 (`NYCJobsWeb/packages.config:7`). Recommended fix: upgrade to 3.4.0 or later; 3.5.0 or later also addresses CVE-2020-11023."
+    }
+  ],
+  "CweFindings": [
+    {
+      "Id": "CWE-456",
+      "Name": "Missing Initialization of a Variable",
+      "Category": "Code Quality",
+      "Severity": "potential",
+      "StoryPoint": 2,
+      "Description": "The product does not initialize critical variables, which causes the execution environment to use unexpected values.",
+      "Files": [
+        "NYCJobsWeb/JobsSearch.cs:24-39",
+        "NYCJobsWeb/Web.config:8-12"
+      ],
+      "Explanation": "The static constructor attempts to initialize _indexClient and _indexZipClient from Searchendpoint, but catches initialization failures and continues with both fields null. Web.config does not declare Searchendpoint (it declares SearchServiceName instead), so the required search clients are not initialized by the checked-in configuration."
+    },
+    {
+      "Id": "CWE-457",
+      "Name": "Use of Uninitialized Variable",
+      "Category": "Code Quality",
+      "Severity": "potential",
+      "StoryPoint": 2,
+      "Description": "The code uses a variable that has not been initialized, leading to unpredictable or unintended results.",
+      "Files": [
+        "NYCJobsWeb/JobsSearch.cs:24-39",
+        "NYCJobsWeb/JobsSearch.cs:109-115"
+      ],
+      "Explanation": "After the static constructor catches a failed client initialization, Search() dereferences the still-null _indexClient. The exception is caught and converted to a null return, which HomeController later dereferences while building the response."
+    },
+    {
+      "Id": "CWE-665",
+      "Name": "Improper Initialization",
+      "Category": "Code Quality",
+      "Severity": "potential",
+      "StoryPoint": 3,
+      "Description": "The product does not initialize or incorrectly initializes a resource, which might leave the resource in an unexpected state when it is accessed or used.",
+      "Files": [
+        "NYCJobsWeb/JobsSearch.cs:24-39",
+        "NYCJobsWeb/JobsSearch.cs:109-115"
+      ],
+      "Explanation": "SearchClient resources are initialized only inside a try block; initialization failures are swallowed, leaving the clients null for later use. The checked-in Web.config omits the Searchendpoint setting read by the constructor."
+    },
+    {
+      "Id": "CWE-681",
+      "Name": "Incorrect Conversion between Numeric Types",
+      "Category": "Code Quality",
+      "Severity": "potential",
+      "StoryPoint": 3,
+      "Description": "When converting from one data type to another, such as long to integer, data can be omitted or translated in a way that produces unexpected values. If the resulting values are used in a sensitive context, then dangerous behaviors may occur.",
+      "Files": [
+        "NYCJobsWeb/Controllers/HomeController.cs:60"
+      ],
+      "Explanation": "HomeController.Search narrows the Azure Search TotalCount value to Int32 using Convert.ToInt32. A count outside the Int32 range raises OverflowException and prevents the response from being created."
+    },
+    {
+      "Id": "CWE-682",
+      "Name": "Incorrect Calculation",
+      "Category": "Code Quality",
+      "Severity": "potential",
+      "StoryPoint": 5,
+      "Description": "The product performs a calculation that generates incorrect or unintended results that are later used in security-critical decisions or resource management.",
+      "Files": [
+        "NYCJobsWeb/Controllers/HomeController.cs:28-30",
+        "NYCJobsWeb/JobsSearch.cs:48-55"
+      ],
+      "Explanation": "The controller defaults currentPage to 0, but JobsSearch.Search assigns Skip = currentPage - 1. The default request therefore produces a negative skip count rather than the first page offset."
+    },
+    {
+      "Id": "CWE-772",
+      "Name": "Missing Release of Resource after Effective Lifetime",
+      "Category": "Code Quality",
+      "Severity": "potential",
+      "StoryPoint": 3,
+      "Description": "The product does not release a resource after its effective lifetime has ended, i.e., after the resource is no longer needed.",
+      "Files": [
+        "DataLoader/DataLoader/Program.cs:59-60",
+        "DataLoader/DataLoader/Program.cs:82-83",
+        "DataLoader/DataLoader/Program.cs:102-103"
+      ],
+      "Explanation": "The importer creates HttpResponseMessage instances for each delete, index creation, and document upload request, then reads the status but never disposes the responses. The repeated upload loop can retain response/content resources until collection rather than releasing them at the end of each request."
+    },
+    {
+      "Id": "CWE-732",
+      "Name": "Incorrect Permission Assignment for Critical Resource",
+      "Category": "Credentials & Secrets",
+      "Severity": "optional",
+      "StoryPoint": 5,
+      "Description": "The product specifies permissions for a security-critical resource in a way that allows that resource to be read or modified by unintended actors.",
+      "Files": [
+        "NYCJobsWeb/Schema_and_Data/nycjobs.schema:1"
+      ],
+      "Explanation": "The Azure Search index schema configures CORS allowedOrigins as [\"*\"], allowing browser requests from arbitrary origins to access the service when otherwise authorized. This is a permissive origin policy on a security-sensitive search resource."
+    },
+    {
+      "Id": "CWE-79",
+      "Name": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+      "Category": "Injection Attacks",
+      "Severity": "optional",
+      "StoryPoint": 8,
+      "Description": "The product does not neutralize or incorrectly neutralizes user-controllable input before it is placed in output that is used as a web page that is served to other users.",
+      "Files": [
+        "NYCJobsWeb/Views/Home/Index.cshtml:397-416",
+        "NYCJobsWeb/Views/Home/JobDetails.cshtml:49-80"
+      ],
+      "Explanation": "UpdateJobDetails inserts Azure AI Search document fields such as business_title, work_location, job_description, and id into HTML using string concatenation and jQuery .html() without output encoding (Index.cshtml:397-416; JobDetails.cshtml:49-80). A stored value containing markup or script can therefore execute in another visitor\u2019s browser."
+    }
+  ]
+}
