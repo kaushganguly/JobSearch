@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "analysisStartTime": "2026-10-26T04:54:19.573005+00:00",
+    "assessmentTool": "dotnet-appcat",
+    "assessmentToolVersion": "1.0.1127",
+    "status": "incomplete",
+    "privacyMode": "Restricted",
+    "upgradeAssessment": {
+      "targetFramework": "net10.0",
+      "status": "incomplete",
+      "analyzedProjects": 0,
+      "reason": "Microsoft.WebApplication.targets was not found when loading NYCJobsWeb.sln. DataLoader/DataLoader.sln was not assessed after this failure."
+    },
+    "limitations": [
+      "Core assessment failed before analysis: Msbuild was not found; Microsoft.WebApplication.targets is unavailable in the Linux .NET SDK. No cloud-readiness conclusions can be drawn. Re-run on Windows with Visual Studio web build tools and .NET Framework targeting packs."
+    ]
+  },
+  "rules": {},
+  "projects": [
+    {
+      "name": "NYCJobsWeb",
+      "path": "NYCJobsWeb/NYCJobsWeb.csproj",
+      "properties": {
+        "repo": "JobSearch",
+        "appName": "NYCJobsWeb",
+        "languages": [
+          "C#"
+        ],
+        "frameworks": [
+          ".NET Framework"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "description": "Core assessment failed before analysis: Msbuild was not found; Microsoft.WebApplication.targets is unavailable in the Linux .NET SDK. No cloud-readiness conclusions can be drawn. Re-run on Windows with Visual Studio web build tools and .NET Framework targeting packs."
+      },
+      "incidents": []
+    },
+    {
+      "name": "DataLoader",
+      "path": "DataLoader/DataLoader/DataLoader.csproj",
+      "properties": {
+        "repo": "JobSearch",
+        "appName": "DataLoader",
+        "languages": [
+          "C#"
+        ],
+        "frameworks": [
+          ".NET Framework"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "description": "Core assessment failed before analysis: Msbuild was not found; Microsoft.WebApplication.targets is unavailable in the Linux .NET SDK. No cloud-readiness conclusions can be drawn. Re-run on Windows with Visual Studio web build tools and .NET Framework targeting packs."
+      },
+      "incidents": []
+    }
+  ]
+}
