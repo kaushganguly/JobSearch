@@ -1,0 +1,181 @@
+{
+  "collection": "dotnet list package --include-transitive --format json failed: missing Microsoft.WebApplication.targets; fallback to both legacy packages.config manifests (installed direct/transitive inventory; dependency parent chains unavailable).",
+  "packages": [
+    {
+      "name": "Azure.Core",
+      "version": "1.4.1",
+      "files": [
+        "NYCJobsWeb/packages.config:3"
+      ]
+    },
+    {
+      "name": "Azure.Search.Documents",
+      "version": "11.1.1",
+      "files": [
+        "NYCJobsWeb/packages.config:4"
+      ]
+    },
+    {
+      "name": "BingGeocodingHelper",
+      "version": "1.1",
+      "files": [
+        "NYCJobsWeb/packages.config:5"
+      ]
+    },
+    {
+      "name": "bootstrap",
+      "version": "3.4.1",
+      "files": [
+        "NYCJobsWeb/packages.config:6"
+      ]
+    },
+    {
+      "name": "jQuery",
+      "version": "3.1.1",
+      "files": [
+        "NYCJobsWeb/packages.config:7"
+      ]
+    },
+    {
+      "name": "Microsoft.AspNet.Mvc",
+      "version": "5.2.2",
+      "files": [
+        "NYCJobsWeb/packages.config:8"
+      ]
+    },
+    {
+      "name": "Microsoft.AspNet.Razor",
+      "version": "3.2.2",
+      "files": [
+        "NYCJobsWeb/packages.config:9"
+      ]
+    },
+    {
+      "name": "Microsoft.AspNet.WebPages",
+      "version": "3.2.2",
+      "files": [
+        "NYCJobsWeb/packages.config:10"
+      ]
+    },
+    {
+      "name": "Microsoft.Bcl.AsyncInterfaces",
+      "version": "1.0.0",
+      "files": [
+        "NYCJobsWeb/packages.config:11"
+      ]
+    },
+    {
+      "name": "Microsoft.Rest.ClientRuntime",
+      "version": "2.3.20",
+      "files": [
+        "NYCJobsWeb/packages.config:12"
+      ]
+    },
+    {
+      "name": "Microsoft.Rest.ClientRuntime.Azure",
+      "version": "3.3.18",
+      "files": [
+        "NYCJobsWeb/packages.config:13"
+      ]
+    },
+    {
+      "name": "Microsoft.Spatial",
+      "version": "7.5.3",
+      "files": [
+        "NYCJobsWeb/packages.config:14"
+      ]
+    },
+    {
+      "name": "Microsoft.Web.Infrastructure",
+      "version": "1.0.0.0",
+      "files": [
+        "NYCJobsWeb/packages.config:15"
+      ]
+    },
+    {
+      "name": "Modernizr",
+      "version": "2.8.3",
+      "files": [
+        "NYCJobsWeb/packages.config:16"
+      ]
+    },
+    {
+      "name": "Newtonsoft.Json",
+      "version": "10.0.3",
+      "files": [
+        "NYCJobsWeb/packages.config:17"
+      ]
+    },
+    {
+      "name": "System.Buffers",
+      "version": "4.5.0",
+      "files": [
+        "NYCJobsWeb/packages.config:18"
+      ]
+    },
+    {
+      "name": "System.Diagnostics.DiagnosticSource",
+      "version": "4.6.0",
+      "files": [
+        "NYCJobsWeb/packages.config:19"
+      ]
+    },
+    {
+      "name": "System.Memory",
+      "version": "4.5.3",
+      "files": [
+        "NYCJobsWeb/packages.config:20"
+      ]
+    },
+    {
+      "name": "System.Numerics.Vectors",
+      "version": "4.5.0",
+      "files": [
+        "NYCJobsWeb/packages.config:21"
+      ]
+    },
+    {
+      "name": "System.Runtime.CompilerServices.Unsafe",
+      "version": "4.6.0",
+      "files": [
+        "NYCJobsWeb/packages.config:22"
+      ]
+    },
+    {
+      "name": "System.Text.Encodings.Web",
+      "version": "4.6.0",
+      "files": [
+        "NYCJobsWeb/packages.config:23"
+      ]
+    },
+    {
+      "name": "System.Text.Json",
+      "version": "4.6.0",
+      "files": [
+        "NYCJobsWeb/packages.config:24"
+      ]
+    },
+    {
+      "name": "System.Threading.Tasks.Extensions",
+      "version": "4.5.2",
+      "files": [
+        "NYCJobsWeb/packages.config:25"
+      ]
+    },
+    {
+      "name": "System.ValueTuple",
+      "version": "4.5.0",
+      "files": [
+        "NYCJobsWeb/packages.config:26"
+      ]
+    },
+    {
+      "name": "Newtonsoft.Json",
+      "version": "9.0.1",
+      "files": [
+        "DataLoader/DataLoader/packages.config:3"
+      ]
+    }
+  ],
+  "apiErrors": []
+}

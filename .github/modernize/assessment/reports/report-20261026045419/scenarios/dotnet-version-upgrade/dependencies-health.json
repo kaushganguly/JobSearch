@@ -1,4 +1,8 @@
 {
+  "status": "incomplete",
+  "limitations": [
+    "No projects or packages were analyzed because Microsoft.WebApplication.targets was not found. Empty package results are not a dependency-health assessment."
+  ],
   "packageGovernance": {
     "totalDistinctPackages": 0,
     "totalVersionDriftInstances": 0,
