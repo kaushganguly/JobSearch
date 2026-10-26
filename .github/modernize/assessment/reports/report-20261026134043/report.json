@@ -1,0 +1,472 @@
+{
+  "version": "1.0.0",
+  "producer": ".NET AppCAT CLI",
+  "metadata": {
+    "analysisStartTime": "2026-10-26T13:40:43.6610279Z",
+    "analysisEndTime": "2026-10-26T13:40:43.8136488Z",
+    "privacyMode": "Restricted",
+    "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2271074",
+    "targetIds": [
+      "AppService.Windows",
+      "AppService.Linux",
+      "AKS.Linux",
+      "AKS.Windows",
+      "ACA",
+      "AppServiceContainer.Linux",
+      "AppServiceContainer.Windows",
+      "AppServiceManagedInstance.Windows"
+    ],
+    "targetDisplayNames": [
+      "Azure App Service",
+      "Azure Kubernetes Service",
+      "Azure Container Apps",
+      "Azure App Service Container",
+      "Azure App Service Managed Instance"
+    ],
+    "os": [
+      "windows",
+      "linux"
+    ]
+  },
+  "summary": {
+    "totalProjects": 2,
+    "totalIssues": 4,
+    "totalIncidents": 4,
+    "totalEffort": 10,
+    "charts": {
+      "severity": {
+        "potential": 2,
+        "optional": 2
+      },
+      "category": {
+        "Runtime": 1,
+        "Security": 1,
+        "Local": 1,
+        "Scale": 1
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "DataLoader/DataLoader.csproj",
+      "issues": 3,
+      "storyPoints": 7,
+      "properties": {
+        "appName": "DataLoader",
+        "frameworks": [
+          ".NETFramework,Version=v4.5"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ]
+      },
+      "incidents": [
+        {
+          "ruleId": "Runtime.0003",
+          "incidentId": "0f3d8da6-7d53-430d-90dd-3427b19d94c2",
+          "location": "DataLoader/DataLoader.csproj",
+          "locationKind": "File",
+          "targets": {
+            "AppService.Windows": {
+              "severity": "potential",
+              "effort": 3
+            },
+            "AppService.Linux": {
+              "severity": "mandatory",
+              "effort": 3
+            },
+            "AKS.Linux": {
+              "severity": "mandatory",
+              "effort": 3
+            },
+            "AKS.Windows": {
+              "severity": "potential",
+              "effort": 3
+            },
+            "ACA": {
+              "severity": "mandatory",
+              "effort": 3
+            },
+            "AppServiceContainer.Linux": {
+              "severity": "mandatory",
+              "effort": 3
+            },
+            "AppServiceContainer.Windows": {
+              "severity": "potential",
+              "effort": 3
+            },
+            "AppServiceManagedInstance.Windows": {
+              "severity": "potential",
+              "effort": 3
+            }
+          },
+          "labels": []
+        },
+        {
+          "ruleId": "Security.0002",
+          "incidentId": "5b445afc-a02f-46f9-903b-55f65d6016c0",
+          "location": "DataLoader/App.config",
+          "locationKind": "File",
+          "targets": {
+            "AppService.Windows": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AppService.Linux": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AKS.Linux": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AKS.Windows": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "ACA": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AppServiceContainer.Linux": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AppServiceContainer.Windows": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AppServiceManagedInstance.Windows": {
+              "severity": "optional",
+              "effort": 3
+            }
+          },
+          "labels": []
+        },
+        {
+          "ruleId": "Local.0006",
+          "incidentId": "311bc029-8e27-48ac-bc42-64761356be22",
+          "location": "DataLoader/Program.cs",
+          "locationKind": "File",
+          "line": 20,
+          "column": 37,
+          "targets": {
+            "AppService.Windows": {
+              "severity": "potential",
+              "effort": 1
+            },
+            "AppService.Linux": {
+              "severity": "potential",
+              "effort": 1
+            },
+            "AKS.Linux": {
+              "severity": "potential",
+              "effort": 1
+            },
+            "AKS.Windows": {
+              "severity": "potential",
+              "effort": 1
+            },
+            "ACA": {
+              "severity": "potential",
+              "effort": 1
+            },
+            "AppServiceContainer.Linux": {
+              "severity": "potential",
+              "effort": 1
+            },
+            "AppServiceContainer.Windows": {
+              "severity": "potential",
+              "effort": 1
+            },
+            "AppServiceManagedInstance.Windows": {
+              "severity": "potential",
+              "effort": 1
+            }
+          },
+          "labels": []
+        }
+      ]
+    },
+    {
+      "path": "NYCJobsWeb",
+      "issues": 1,
+      "storyPoints": 3,
+      "properties": {
+        "appName": "",
+        "frameworks": [],
+        "languages": [],
+        "tools": []
+      },
+      "incidents": [
+        {
+          "ruleId": "Scale.0001",
+          "incidentId": "7b7ac4ef-8977-4237-8a19-c7f936794c3a",
+          "location": "NYCJobsWeb",
+          "locationKind": "File",
+          "targets": {
+            "AppService.Windows": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AppService.Linux": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AKS.Linux": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AKS.Windows": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "ACA": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AppServiceContainer.Linux": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AppServiceContainer.Windows": {
+              "severity": "optional",
+              "effort": 3
+            },
+            "AppServiceManagedInstance.Windows": {
+              "severity": "optional",
+              "effort": 3
+            }
+          },
+          "labels": []
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "Runtime.0003": {
+      "id": "Runtime.0003",
+      "description": "Applications running on frameworks older than .NET Framework 4.8 could have potential compatibility issues.\n\nIf you are targeting Managed Instance on Azure App Service, run the app on .NET Framework 4.8 (preinstalled) without retargeting if feasible; review runtime breaking changes and validate on Managed Instance staging.\n\nAzure App Service runs apps on .NET Framework 4.8 or .NET Framework 3.5. Upgrade to a newer target framework or double check that your application works correctly when running on .NET Framework 4.8.\n\nApps that already run on .NET Framework 3.5 or .NET Framework 4.8 do not need changed even if they target an older framework version.\n\nAlthough retargeting to .NET Framework 4.8 will address this issue, it is not necessary. It is only necessary to ensure that the app runs correctly on .NET Framework 3.5 or .NET Framework 4.8. Applications built against older versions of the .NET Framework can run on newer versions (like 4.8) and the runtime will automatically tweak certain behaviors so that the runtime behaves as much as possible as the targeted version. Breaking change documentation mentions both runtime breaking changes and retargeting breaking changes. Runtime breaking changes refer to differences in behavior when applications are run on a newer version of the .NET Framework. These are the behavioral differences which cannot be tweaked away and will matter for applications migrating to Azure App Service. Retargeting breaking changes are changes which only manifest when an app targets a newer version of the .NET Framework. These should not cause issues during App Service migration scenarios because apps do not need re-targeted.\n\nActions to address this issue:\n    1. Review breaking changes between the version of the .NET Framework the application runs on now and .NET Framework 4.8 to make sure none are likely to affect the application.\n    2. Test the application running on .NET Framework 3.5 or .NET Framework 4.8 to ensure it works as expected.",
+      "title": "Old .NET Framework dependency detected",
+      "severity": "potential",
+      "effort": 3,
+      "links": [
+        {
+          "title": ".NET Framework Breaking Changes",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2250029"
+        },
+        {
+          "title": ".NET Framework 4.8 on App Service",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2251730"
+        },
+        {
+          "title": "Configuration builders for ASP.NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2251829"
+        }
+      ],
+      "labels": []
+    },
+    "Security.0002": {
+      "id": "Security.0002",
+      "description": "Connection strings without configuration builders detected.  \n\n Keeping connection strings directly in the app is not the best practice and might introduce security risks, increased maintenance, scalability challenges or compliance standards (such as PCI DSS, GDPR, etc.). \n\n Instead, it is recommended to use configuration builders to get secrets from secure sources in Azure environment.",
+      "title": "Connection strings without configuration builders detected",
+      "severity": "optional",
+      "effort": 3,
+      "links": [
+        {
+          "title": "Configuration builders",
+          "url": "https://go.microsoft.com/fwlink/?LinkID=2250915"
+        },
+        {
+          "title": "Storing application secrets",
+          "url": "https://go.microsoft.com/fwlink/?LinkID=2250916"
+        },
+        {
+          "title": "Centralized app configuration and security",
+          "url": "https://go.microsoft.com/fwlink/?LinkID=2250733"
+        }
+      ],
+      "labels": []
+    },
+    "Local.0006": {
+      "id": "Local.0006",
+      "description": "Your application has hardcoded URLs that might correspond to services that are not accessible on Azure.\n\nReview and ensure that the application is attempting to access URLs that would be available from Azure. You might need to migrate those services to Azure too, this way you will get the benefit of lower latency in the cloud.\n\nIf your application needs to depend on services that run on-premises, you can connect your Azure and local networks with ExpressRoute, Hybrid Connections, or VPN solutions.",
+      "title": "Hardcoded URLs detected",
+      "severity": "potential",
+      "effort": 1,
+      "links": [
+        {
+          "title": "ExpressRoute",
+          "url": "https://go.microsoft.com/fwlink/?LinkID=2250577"
+        },
+        {
+          "title": "Hybrid Connections",
+          "url": "https://go.microsoft.com/fwlink/?LinkID=2242588"
+        },
+        {
+          "title": "Connect an on-prem network",
+          "url": "https://go.microsoft.com/fwlink/?LinkID=2242591"
+        }
+      ],
+      "labels": []
+    },
+    "Scale.0001": {
+      "id": "Scale.0001",
+      "description": "Static content detected.\n\nYour current approach of serving static content directly might lead to increased costs, performance issues, maintenance challenges (requiring application redeployment for content changes), and security risks.\n\nConsider moving static content to Azure Blob Storage and adding Azure CDN.",
+      "title": "Static content detected",
+      "severity": "optional",
+      "effort": 3,
+      "links": [
+        {
+          "title": "Azure Blob Storage",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2250574"
+        },
+        {
+          "title": "Azure CDN",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2250392"
+        }
+      ],
+      "labels": []
+    }
+  },
+  "security": [
+    {
+      "id": "CVE-2024-21907",
+      "title": "Improper Handling of Exceptional Conditions in Newtonsoft.Json",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Improper Handling of Exceptional Conditions in Newtonsoft.Json.\n\nSeverity: HIGH. Affected versions: Newtonsoft.Json 10.0.3 (NYCJobsWeb) and 9.0.1 (DataLoader); the vulnerable range is below 13.0.1.\n\nRecommended fix: Upgrade both declarations to 13.0.1 or later.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:17",
+          "DataLoader/DataLoader/packages.config:3"
+        ],
+        "explanation": "[CVE-2024-21907](https://github.com/advisories/GHSA-5crp-9r3c-p9vr): Improper Handling of Exceptional Conditions in Newtonsoft.Json.\n\nSeverity: HIGH. Affected versions: Newtonsoft.Json 10.0.3 (NYCJobsWeb) and 9.0.1 (DataLoader); the vulnerable range is below 13.0.1.\n\nRecommended fix: Upgrade both declarations to 13.0.1 or later."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2022-26907",
+      "title": "Azure SDK for .NET Information Disclosure Vulnerability",
+      "category": "CVE",
+      "severity": "optional",
+      "description": "[CVE-2022-26907](https://github.com/advisories/GHSA-whph-446h-6m9v): Azure SDK for .NET Information Disclosure Vulnerability.\n\nSeverity: MEDIUM. Microsoft.Rest.ClientRuntime 2.3.20 is affected by the vulnerable range below 2.3.24.\n\nRecommended fix: Upgrade Microsoft.Rest.ClientRuntime to 2.3.24 or later.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:12"
+        ],
+        "explanation": "[CVE-2022-26907](https://github.com/advisories/GHSA-whph-446h-6m9v): Azure SDK for .NET Information Disclosure Vulnerability.\n\nSeverity: MEDIUM. Microsoft.Rest.ClientRuntime 2.3.20 is affected by the vulnerable range below 2.3.24.\n\nRecommended fix: Upgrade Microsoft.Rest.ClientRuntime to 2.3.24 or later."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2021-26701",
+      "title": ".NET Core Remote Code Execution Vulnerability",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): .NET Core Remote Code Execution Vulnerability.\n\nSeverity: CRITICAL. System.Text.Encodings.Web 4.6.0 is within the affected range >= 4.6.0 and < 4.7.2.\n\nRecommended fix: Upgrade System.Text.Encodings.Web to 4.7.2 or later.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:23"
+        ],
+        "explanation": "[CVE-2021-26701](https://github.com/advisories/GHSA-ghhp-997w-qr28): .NET Core Remote Code Execution Vulnerability.\n\nSeverity: CRITICAL. System.Text.Encodings.Web 4.6.0 is within the affected range >= 4.6.0 and < 4.7.2.\n\nRecommended fix: Upgrade System.Text.Encodings.Web to 4.7.2 or later."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2020-11023",
+      "title": "Potential XSS vulnerability in jQuery",
+      "category": "CVE",
+      "severity": "optional",
+      "description": "[CVE-2020-11023](https://github.com/advisories/GHSA-jpcq-cgw6-v4j6): Potential XSS vulnerability in jQuery.\n\nSeverity: MEDIUM. jQuery 3.1.1 is affected by versions >= 1.0.3 and < 3.5.0.\n\nRecommended fix: Upgrade jQuery to 3.5.0 or later.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:7"
+        ],
+        "explanation": "[CVE-2020-11023](https://github.com/advisories/GHSA-jpcq-cgw6-v4j6): Potential XSS vulnerability in jQuery.\n\nSeverity: MEDIUM. jQuery 3.1.1 is affected by versions >= 1.0.3 and < 3.5.0.\n\nRecommended fix: Upgrade jQuery to 3.5.0 or later."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2019-11358",
+      "title": "XSS in jQuery as used in Drupal, Backdrop CMS, and other products",
+      "category": "CVE",
+      "severity": "optional",
+      "description": "[CVE-2019-11358](https://github.com/advisories/GHSA-6c3j-c64m-qhgq): XSS in jQuery as used in Drupal, Backdrop CMS, and other products.\n\nSeverity: MEDIUM. jQuery 3.1.1 is affected by versions >= 1.1.4 and < 3.4.0.\n\nRecommended fix: Upgrade jQuery to 3.4.0 or later (3.5.0 or later also addresses CVE-2020-11023).",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/packages.config:7"
+        ],
+        "explanation": "[CVE-2019-11358](https://github.com/advisories/GHSA-6c3j-c64m-qhgq): XSS in jQuery as used in Drupal, Backdrop CMS, and other products.\n\nSeverity: MEDIUM. jQuery 3.1.1 is affected by versions >= 1.1.4 and < 3.4.0.\n\nRecommended fix: Upgrade jQuery to 3.4.0 or later (3.5.0 or later also addresses CVE-2020-11023)."
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CWE-665",
+      "title": "Improper Initialization",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product does not initialize or incorrectly initializes a resource, which might leave the resource in an unexpected state when it is accessed or used.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/JobsSearch.cs:24-39",
+          "NYCJobsWeb/JobsSearch.cs:109",
+          "NYCJobsWeb/JobsSearch.cs:128"
+        ],
+        "explanation": "The static JobsSearch initializer catches failures while creating the search clients and stores only the exception message, leaving _indexClient or _indexZipClient null. Later search methods dereference these fields, so failed initialization leaves the resource in an unusable state."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-682",
+      "title": "Incorrect Calculation",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product performs a calculation that generates incorrect or unintended results that are later used in security-critical decisions or resource management.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Controllers/HomeController.cs:28-30",
+          "NYCJobsWeb/JobsSearch.cs:48-53"
+        ],
+        "explanation": "HomeController.Search defaults currentPage to 0, while JobsSearch.Search sets SearchOptions.Skip to currentPage - 1. The default request therefore calculates a negative skip value rather than the first page offset."
+      },
+      "storyPoint": 5
+    },
+    {
+      "id": "CWE-772",
+      "title": "Missing Release of Resource after Effective Lifetime",
+      "category": "Code Quality",
+      "severity": "potential",
+      "description": "The product does not release a resource after its effective lifetime has ended, i.e., after the resource is no longer needed.",
+      "evidence": {
+        "files": [
+          "DataLoader/DataLoader/AzureSearchHelper.cs:52-65",
+          "DataLoader/DataLoader/Program.cs:58-60",
+          "DataLoader/DataLoader/Program.cs:82-83",
+          "DataLoader/DataLoader/Program.cs:102-103"
+        ],
+        "explanation": "SendSearchRequest creates an HttpRequestMessage and returns an HttpResponseMessage without disposing the request. Program receives each response for delete/create/upload operations and checks its status but does not dispose the response or its content after use."
+      },
+      "storyPoint": 3
+    },
+    {
+      "id": "CWE-79",
+      "title": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+      "category": "Injection Attacks",
+      "severity": "optional",
+      "description": "The product does not neutralize or incorrectly neutralizes user-controllable input before it is placed in output that is used as a web page that is served to other users.",
+      "evidence": {
+        "files": [
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml:49-52",
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml:68-73",
+          "NYCJobsWeb/Views/Home/JobDetails.cshtml:79-80"
+        ],
+        "explanation": "UpdateJobDetails inserts fields returned from the Azure Search job document directly through jQuery .html(). The title, location, and other text fields are not HTML-encoded; CleanText only performs character substitutions and returns raw markup for job descriptions and related fields. A stored markup/script payload in imported job data can therefore execute in a visitor’s browser."
+      },
+      "storyPoint": 8
+    }
+  ]
+}
